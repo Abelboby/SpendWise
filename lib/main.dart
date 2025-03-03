@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Income Tracker',
+        title: 'SpendWise',
         theme: ThemeData(
           colorScheme: AppColors.realTheme,
           useMaterial3: true,

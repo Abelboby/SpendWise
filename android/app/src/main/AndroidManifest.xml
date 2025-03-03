@@ -18,7 +18,7 @@
         </intent>
     </queries>
     <application
-        android:label="chit_tracker"
+        android:label="SpendWise"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

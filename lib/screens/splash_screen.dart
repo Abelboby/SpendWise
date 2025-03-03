@@ -135,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 32),
                       Text(
-                        'Chit Tracker',
+                        'SpendWise',
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium
@@ -147,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Track your chits efficiently',
+                        'Smart financial tracking',
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   color: Colors.white.withOpacity(0.8),
