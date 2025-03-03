@@ -5,6 +5,8 @@ import '../models/income_model.dart';
 import '../providers/finance_provider.dart';
 import '../widgets/add_expense_dialog.dart';
 import '../constants/app_colors.dart';
+import '../models/space_model.dart';
+import '../providers/space_provider.dart';
 
 class IncomeDetailsScreen extends StatelessWidget {
   final IncomeModel income;
@@ -54,10 +56,24 @@ class IncomeDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final financeProvider = Provider.of<FinanceProvider>(context);
+    final spaceProvider = Provider.of<SpaceProvider>(context);
     final expenses = financeProvider.getExpensesForIncome(income.id);
     final totalExpenses = financeProvider.getTotalExpensesForIncome(income.id);
     final remainingAmount =
         financeProvider.getRemainingAmountForIncome(income.id);
+
+    // Check if this income is part of a space
+    final space = income.spaceId != null
+        ? spaceProvider.spaces.firstWhere((s) => s.id == income.spaceId)
+        : null;
+
+    // Only allow expense management if it's a personal income or user has proper permissions
+    final canManageExpenses =
+        space == null || financeProvider.canManageFinances(space);
+
+    // Get creator info if this is a space income
+    final creator =
+        space?.members.firstWhere((m) => m.userId == income.createdBy);
 
     // Define colors for remaining amount
     final remainingAmountColor = remainingAmount >= 0
@@ -101,6 +117,16 @@ class IncomeDetailsScreen extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 8),
+                if (creator != null) ...[
+                  Text(
+                    'Added by ${creator.displayName}',
+                    style: TextStyle(
+                      color: AppColors.lightGrey.withOpacity(0.8),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
                 Text(
                   DateFormat('MMMM dd, yyyy').format(income.dateTime),
                   style: TextStyle(color: AppColors.lightGrey.withOpacity(0.8)),
@@ -163,8 +189,11 @@ class IncomeDetailsScreen extends StatelessWidget {
                 final expense = expenses[index];
                 return Dismissible(
                   key: Key(expense.id),
-                  direction: DismissDirection.endToStart,
-                  confirmDismiss: (_) => _confirmDelete(context),
+                  direction: canManageExpenses
+                      ? DismissDirection.endToStart
+                      : DismissDirection.none,
+                  confirmDismiss:
+                      canManageExpenses ? (_) => _confirmDelete(context) : null,
                   onDismissed: (_) => financeProvider.deleteExpense(expense.id),
                   background: Container(
                     margin: const EdgeInsets.only(bottom: 16),
@@ -198,15 +227,31 @@ class IncomeDetailsScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: Text(
-                                  expense.description,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.navy,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      expense.description,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.navy,
+                                          ),
+                                    ),
+                                    if (space != null &&
+                                        expense.createdBy != null) ...[
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Added by ${space.members.firstWhere((m) => m.userId == expense.createdBy).displayName}',
+                                        style: TextStyle(
+                                          color: AppColors.darkGrey,
+                                          fontSize: 12,
+                                        ),
                                       ),
+                                    ],
+                                  ],
                                 ),
                               ),
                               Container(
@@ -280,19 +325,21 @@ class IncomeDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => AddExpenseDialog(income: income),
-          );
-        },
-        backgroundColor: AppColors.accent,
-        foregroundColor: Colors.white,
-        elevation: 4,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Expense'),
-      ),
+      floatingActionButton: canManageExpenses
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => AddExpenseDialog(income: income),
+                );
+              },
+              backgroundColor: AppColors.accent,
+              foregroundColor: Colors.white,
+              elevation: 4,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Expense'),
+            )
+          : null,
     );
   }
 
