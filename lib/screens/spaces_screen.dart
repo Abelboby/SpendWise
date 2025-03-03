@@ -128,6 +128,34 @@ class SpacesScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildStatColumn(
+    BuildContext context,
+    String label,
+    String value,
+    Color color,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.lightGrey.withOpacity(0.8),
+            fontSize: 12,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,21 +168,12 @@ class SpacesScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [0.0, 0.4, 1.0],
-                  colors: [
-                    AppColors.navy,
-                    AppColors.darkGrey,
-                    AppColors.accent.withOpacity(0.9),
-                  ],
-                ),
+                color: AppColors.navy,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.navy.withOpacity(0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
+                    color: AppColors.navy.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -181,7 +200,7 @@ class SpacesScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        'Spaces',
+                        'My Spaces',
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium
@@ -192,6 +211,40 @@ class SpacesScreen extends StatelessWidget {
                             ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 24),
+                  Consumer<SpaceProvider>(
+                    builder: (context, spaceProvider, _) {
+                      final totalSpaces = spaceProvider.spaces.length;
+                      final ownedSpaces = spaceProvider.spaces
+                          .where((space) => space.isOwner(spaceProvider.userId))
+                          .length;
+                      final joinedSpaces = totalSpaces - ownedSpaces;
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildStatColumn(
+                            context,
+                            'Total Spaces',
+                            totalSpaces.toString(),
+                            AppColors.accent,
+                          ),
+                          _buildStatColumn(
+                            context,
+                            'Owned',
+                            ownedSpaces.toString(),
+                            const Color(0xFF4CAF50),
+                          ),
+                          _buildStatColumn(
+                            context,
+                            'Joined',
+                            joinedSpaces.toString(),
+                            const Color(0xFF42A5F5),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -283,94 +336,144 @@ class SpacesScreen extends StatelessWidget {
                     itemCount: spaceProvider.spaces.length,
                     itemBuilder: (context, index) {
                       final space = spaceProvider.spaces[index];
-                      return Card(
+                      return Container(
                         margin: const EdgeInsets.only(bottom: 16),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          side: BorderSide(
-                            color: AppColors.navy.withOpacity(0.1),
-                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.navy.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    SpaceDetailsScreen(space: space),
-                              ),
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            AppColors.accent.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        space.isPublic
-                                            ? Icons.public
-                                            : Icons.lock_outline,
-                                        color: AppColors.accent,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        space.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              color: AppColors.navy,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.navy.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        '${space.members.length} members',
-                                        style: TextStyle(
-                                          color: AppColors.navy,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SpaceDetailsScreen(space: space),
+                                ),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              AppColors.accent.withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                         ),
+                                        child: Icon(
+                                          space.isPublic
+                                              ? Icons.public
+                                              : Icons.lock_outline,
+                                          color: AppColors.accent,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              space.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    color: AppColors.navy,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              space.isOwner(
+                                                      spaceProvider.userId)
+                                                  ? 'Owner'
+                                                  : 'Member',
+                                              style: TextStyle(
+                                                color: space.isOwner(
+                                                        spaceProvider.userId)
+                                                    ? const Color(0xFF4CAF50)
+                                                    : AppColors.darkGrey,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              AppColors.navy.withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          '${space.members.length} members',
+                                          style: TextStyle(
+                                            color: AppColors.navy,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (space.description.isNotEmpty) ...[
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.navy.withOpacity(0.05),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.info_outline,
+                                            size: 16,
+                                            color: AppColors.darkGrey,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              space.description,
+                                              style: TextStyle(
+                                                color: AppColors.darkGrey,
+                                                height: 1.4,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
-                                ),
-                                if (space.description.isNotEmpty) ...[
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    space.description,
-                                    style: TextStyle(
-                                      color: AppColors.darkGrey,
-                                      height: 1.4,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
                                 ],
-                              ],
+                              ),
                             ),
                           ),
                         ),
