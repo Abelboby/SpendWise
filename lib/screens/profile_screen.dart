@@ -119,13 +119,14 @@ class ProfileScreen extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
-                      Icons.person_outline,
-                      color: AppColors.accent,
-                      size: 24,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/images/abel.jpg',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   title: Text(
