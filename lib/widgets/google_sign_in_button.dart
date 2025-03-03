@@ -32,7 +32,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
     );
     _buttonScaleAnimation = Tween<double>(
       begin: 1.0,
-      end: 0.8,
+      end: 0.95,
     ).animate(CurvedAnimation(
       parent: _buttonAnimationController,
       curve: Curves.easeInOut,
@@ -52,17 +52,13 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
       });
       await _buttonAnimationController.forward();
 
-      // Use the AuthProvider to sign in
       await context.read<AuthProvider>().signInWithGoogle();
 
       if (!mounted) return;
-
-      // Call the success callback
       widget.onSuccess();
     } catch (e) {
       if (!mounted) return;
 
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Sign in failed: ${e.toString()}'),
@@ -70,7 +66,6 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
         ),
       );
 
-      // Call error callback if provided
       if (widget.onError != null) {
         widget.onError!(e);
       }
@@ -90,14 +85,19 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
     return ScaleTransition(
       scale: _buttonScaleAnimation,
       child: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
@@ -120,26 +120,41 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
                     _buttonAnimationController.reverse();
                   },
             onTap: _isLoading ? null : _handleGoogleSignIn,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 16,
+                vertical: 16,
+                horizontal: 24,
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (!_isLoading) ...[
-                    Image.asset(
-                      'assets/images/google_logo.png',
-                      height: 24,
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Image.asset(
+                          'assets/images/google_logo.png',
+                          height: 18,
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 16),
                     Text(
                       'Sign in with Google',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
                           ),
                     ),
                   ] else
@@ -148,8 +163,9 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
                       height: 24,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(AppColors.accent),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white.withOpacity(0.9),
+                        ),
                       ),
                     ),
                 ],

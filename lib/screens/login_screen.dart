@@ -171,12 +171,6 @@ class _LoginScreenState extends State<LoginScreen>
                               Icons.group_outlined,
                               'Collaborate with Others',
                             ),
-                            const SizedBox(height: 16),
-                            _buildFeatureItem(
-                              context,
-                              Icons.insights_outlined,
-                              'Insightful Analytics',
-                            ),
                           ],
                         ),
                         const SizedBox(height: 48),
