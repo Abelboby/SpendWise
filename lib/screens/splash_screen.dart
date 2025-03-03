@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/auth_provider.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_icons.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -120,10 +122,14 @@ class _SplashScreenState extends State<SplashScreen>
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
-                            Icons.account_balance_wallet,
-                            size: 48,
-                            color: AppColors.accent,
+                          child: SvgPicture.asset(
+                            AppIcons.wallet,
+                            width: 48,
+                            height: 48,
+                            colorFilter: ColorFilter.mode(
+                              AppColors.accent,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),

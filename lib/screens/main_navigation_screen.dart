@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'home_screen.dart';
 import 'profile_screen.dart';
 import 'spaces_screen.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_icons.dart';
 import '../providers/finance_provider.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -46,16 +48,33 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
+            icon: SvgPicture.asset(
+              AppIcons.wallet,
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                AppColors.darkGrey,
+                BlendMode.srcIn,
+              ),
+            ),
+            activeIcon: SvgPicture.asset(
+              AppIcons.wallet,
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                AppColors.accent,
+                BlendMode.srcIn,
+              ),
+            ),
             label: 'Incomes',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.group_work_outlined),
             label: 'Spaces',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
