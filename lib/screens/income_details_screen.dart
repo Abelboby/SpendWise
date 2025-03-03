@@ -85,11 +85,11 @@ class IncomeDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.navy,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
           'Income Details',
           style: TextStyle(color: AppColors.lightGrey),
         ),
-        iconTheme: IconThemeData(color: AppColors.lightGrey),
       ),
       body: Column(
         children: [

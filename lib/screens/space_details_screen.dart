@@ -847,8 +847,108 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
           // Members Tab
           ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: widget.space.members.length,
+            itemCount: widget.space.members.length +
+                1, // +1 for the Leave Space button
             itemBuilder: (context, index) {
+              if (index == widget.space.members.length) {
+                // Leave Space button at the bottom
+                final authProvider = Provider.of<AuthProvider>(context);
+                final spaceProvider = Provider.of<SpaceProvider>(context);
+                final isOwner = widget.space.isOwner(authProvider.uid);
+
+                if (isOwner)
+                  return const SizedBox
+                      .shrink(); // Don't show leave button for owner
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.navy.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.exit_to_app,
+                          color: Colors.red,
+                        ),
+                      ),
+                      title: const Text(
+                        'Leave Space',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Remove yourself from this space',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ),
+                      onTap: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Leave Space'),
+                            content: const Text(
+                              'Are you sure you want to leave this space? This action cannot be undone.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                                child: const Text('Leave'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirmed == true) {
+                          try {
+                            await spaceProvider.leaveSpace(widget.space.id);
+                            if (context.mounted) {
+                              Navigator.of(context)
+                                  .pop(); // Return to spaces list
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                );
+              }
+
               final member = widget.space.members[index];
               return Container(
                 margin: const EdgeInsets.only(bottom: 12),
@@ -908,7 +1008,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
           ),
         ],
       ),
-      floatingActionButton: canManageFinances
+      floatingActionButton: _tabController.index == 0 && canManageFinances
           ? FloatingActionButton.extended(
               onPressed: () {
                 showDialog(
