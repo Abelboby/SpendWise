@@ -440,59 +440,111 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context) => Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
-                  ),
-                  child: SafeArea(
-                    child: Column(
+            icon: const Icon(Icons.share_outlined, color: Colors.white),
+            tooltip: 'Share Space',
+            onPressed: () => _showShareDialog(context),
+          ),
+          if (isOwner) ...[
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.white),
+              tooltip: 'Delete Space',
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    title: Text(
+                      'Delete Space',
+                      style: TextStyle(
+                        color: AppColors.navy,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    content: Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          'Are you sure you want to delete this space?',
+                          style: TextStyle(color: AppColors.darkGrey),
+                        ),
+                        const SizedBox(height: 12),
                         Container(
-                          width: 40,
-                          height: 4,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(2),
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.red.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.warning_amber_rounded,
+                                color: Colors.red[700],
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'This action cannot be undone. All incomes and expenses will be permanently deleted.',
+                                  style: TextStyle(
+                                    color: Colors.red[700],
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        ListTile(
-                          leading: const Icon(Icons.share_outlined),
-                          title: const Text('Share Space'),
-                          subtitle: const Text('Invite members to join'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            _showShareDialog(context);
-                          },
-                        ),
-                        if (isOwner) ...[
-                          const Divider(),
-                          ListTile(
-                            leading: const Icon(Icons.delete_outline,
-                                color: Colors.red),
-                            title: const Text('Delete Space'),
-                            subtitle:
-                                const Text('This action cannot be undone'),
-                            onTap: () {
-                              // Handle delete
-                            },
-                          ),
-                        ],
                       ],
                     ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.darkGrey,
+                        ),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            await spaceProvider.deleteSpace(widget.space.id);
+                            if (context.mounted) {
+                              Navigator.of(context).pop(); // Close dialog
+                              Navigator.of(context)
+                                  .pop(); // Return to spaces list
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Delete'),
+                      ),
+                    ],
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
+          ],
+          const SizedBox(width: 8),
         ],
         bottom: TabBar(
           controller: _tabController,
