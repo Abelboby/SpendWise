@@ -53,347 +53,329 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.lightGrey,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(
+        backgroundColor: AppColors.navy,
+        elevation: 0,
+        title: Row(
           children: [
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.navy,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.navy.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: AppColors.lightGrey.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.lightGrey.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: AppColors.lightGrey.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.account_balance_wallet_outlined,
-                          color: AppColors.lightGrey,
-                          size: 28,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        'Personal Incomes',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.lightGrey,
-                              letterSpacing: 0.5,
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildAmountColumn(
-                        context,
-                        'Total Income',
-                        financeProvider.totalIncome,
-                        AppColors.accent,
-                      ),
-                      _buildAmountColumn(
-                        context,
-                        'Total Spent',
-                        financeProvider.totalExpenses,
-                        const Color(0xFFEF5350),
-                      ),
-                      _buildAmountColumn(
-                        context,
-                        'Remaining',
-                        financeProvider.totalIncome -
-                            financeProvider.totalExpenses,
-                        financeProvider.totalIncome -
-                                    financeProvider.totalExpenses >=
-                                0
-                            ? const Color(0xFF4CAF50)
-                            : const Color(0xFFE57373),
-                      ),
-                    ],
-                  ),
-                ],
+              child: Icon(
+                Icons.account_balance_wallet_outlined,
+                color: AppColors.lightGrey,
+                size: 24,
               ),
             ),
-            Expanded(
-              child: incomes.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.account_balance_wallet_outlined,
-                            size: 64,
-                            color: AppColors.darkGrey.withOpacity(0.5),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No Incomes Yet',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  color: AppColors.navy,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Add an income to get started',
-                            style: TextStyle(color: AppColors.darkGrey),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: incomes.length,
-                      itemBuilder: (context, index) {
-                        final income = incomes[index];
-                        final expenses =
-                            financeProvider.getExpensesForIncome(income.id);
-                        final remainingAmount = financeProvider
-                            .getRemainingAmountForIncome(income.id);
+            const SizedBox(width: 12),
+            Text(
+              'Personal Incomes',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.navy,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.navy.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildAmountColumn(
+                  context,
+                  'Total Income',
+                  financeProvider.totalIncome,
+                  AppColors.accent,
+                ),
+                _buildAmountColumn(
+                  context,
+                  'Total Spent',
+                  financeProvider.totalExpenses,
+                  const Color(0xFFEF5350),
+                ),
+                _buildAmountColumn(
+                  context,
+                  'Remaining',
+                  financeProvider.totalIncome - financeProvider.totalExpenses,
+                  financeProvider.totalIncome - financeProvider.totalExpenses >=
+                          0
+                      ? const Color(0xFF4CAF50)
+                      : const Color(0xFFE57373),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: incomes.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.account_balance_wallet_outlined,
+                          size: 64,
+                          color: AppColors.darkGrey.withOpacity(0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No Incomes Yet',
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: AppColors.navy,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Add an income to get started',
+                          style: TextStyle(color: AppColors.darkGrey),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: incomes.length,
+                    itemBuilder: (context, index) {
+                      final income = incomes[index];
+                      final expenses =
+                          financeProvider.getExpensesForIncome(income.id);
+                      final remainingAmount = financeProvider
+                          .getRemainingAmountForIncome(income.id);
 
-                        return Dismissible(
-                          key: Key(income.id),
-                          direction: DismissDirection.endToStart,
-                          confirmDismiss: (_) => _confirmDelete(context),
-                          onDismissed: (_) =>
-                              financeProvider.deleteIncome(income.id),
-                          background: Container(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            decoration: BoxDecoration(
-                              color: AppColors.accent,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 24),
-                            child: Icon(
-                              Icons.delete_outline,
-                              color: AppColors.lightGrey,
-                              size: 28,
-                            ),
+                      return Dismissible(
+                        key: Key(income.id),
+                        direction: DismissDirection.endToStart,
+                        confirmDismiss: (_) => _confirmDelete(context),
+                        onDismissed: (_) =>
+                            financeProvider.deleteIncome(income.id),
+                        background: Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent,
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 24),
+                          child: Icon(
+                            Icons.delete_outline,
+                            color: AppColors.lightGrey,
+                            size: 28,
+                          ),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.navy.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        IncomeDetailsScreen(income: income),
+                                  ),
+                                );
+                              },
                               borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.navy.withOpacity(0.1),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          IncomeDetailsScreen(income: income),
-                                    ),
-                                  );
-                                },
-                                borderRadius: BorderRadius.circular(16),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              income.description,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium
-                                                  ?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: AppColors.navy,
-                                                  ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 6,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.accent
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Text(
-                                              'Rs. ${income.amount.toStringAsFixed(2)}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium
-                                                  ?.copyWith(
-                                                    color: AppColors.accent,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.navy
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Icon(
-                                              Icons.calendar_today_outlined,
-                                              size: 16,
-                                              color: AppColors.navy,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            DateFormat('MMM dd, yyyy')
-                                                .format(income.dateTime),
-                                            style: TextStyle(
-                                              color: AppColors.navy,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (income.notes != null) ...[
-                                        const SizedBox(height: 12),
-                                        Container(
-                                          padding: const EdgeInsets.all(12),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.navy
-                                                .withOpacity(0.05),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.notes_outlined,
-                                                size: 16,
-                                                color: AppColors.darkGrey,
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Expanded(
-                                                child: Text(
-                                                  income.notes!,
-                                                  style: TextStyle(
-                                                    color: AppColors.darkGrey,
-                                                    height: 1.4,
-                                                  ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            income.description,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.navy,
                                                 ),
-                                              ),
-                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.accent
+                                                .withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Text(
+                                            'Rs. ${income.amount.toStringAsFixed(2)}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  color: AppColors.accent,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
                                         ),
                                       ],
-                                      const SizedBox(height: 16),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                AppColors.navy.withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Icon(
+                                            Icons.calendar_today_outlined,
+                                            size: 16,
+                                            color: AppColors.navy,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          DateFormat('MMM dd, yyyy')
+                                              .format(income.dateTime),
+                                          style: TextStyle(
+                                            color: AppColors.navy,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (income.notes != null) ...[
+                                      const SizedBox(height: 12),
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color: AppColors.lightGrey,
+                                          color:
+                                              AppColors.navy.withOpacity(0.05),
                                           borderRadius:
-                                              BorderRadius.circular(12),
+                                              BorderRadius.circular(8),
                                         ),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.navy
-                                                        .withOpacity(0.1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.receipt_outlined,
-                                                    size: 16,
-                                                    color: AppColors.navy,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  '${expenses.length} Expenses',
-                                                  style: TextStyle(
-                                                    color: AppColors.navy,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
+                                            Icon(
+                                              Icons.notes_outlined,
+                                              size: 16,
+                                              color: AppColors.darkGrey,
                                             ),
-                                            Text(
-                                              'Remaining: Rs. ${remainingAmount.toStringAsFixed(2)}',
-                                              style: TextStyle(
-                                                color: remainingAmount >= 0
-                                                    ? const Color(0xFF4CAF50)
-                                                    : const Color(0xFFE57373),
-                                                fontWeight: FontWeight.bold,
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                income.notes!,
+                                                style: TextStyle(
+                                                  color: AppColors.darkGrey,
+                                                  height: 1.4,
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
                                     ],
-                                  ),
+                                    const SizedBox(height: 16),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.lightGrey,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.navy
+                                                      .withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Icon(
+                                                  Icons.receipt_outlined,
+                                                  size: 16,
+                                                  color: AppColors.navy,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                '${expenses.length} Expenses',
+                                                style: TextStyle(
+                                                  color: AppColors.navy,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            'Remaining: Rs. ${remainingAmount.toStringAsFixed(2)}',
+                                            style: TextStyle(
+                                              color: remainingAmount >= 0
+                                                  ? const Color(0xFF4CAF50)
+                                                  : const Color(0xFFE57373),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
