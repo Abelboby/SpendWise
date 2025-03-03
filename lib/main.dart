@@ -40,6 +40,24 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: AppColors.realTheme,
           useMaterial3: true,
+          fontFamily: 'Manrope',
+          textTheme: const TextTheme(
+            displayLarge: TextStyle(fontWeight: FontWeight.w700),
+            displayMedium: TextStyle(fontWeight: FontWeight.w700),
+            displaySmall: TextStyle(fontWeight: FontWeight.w700),
+            headlineLarge: TextStyle(fontWeight: FontWeight.w700),
+            headlineMedium: TextStyle(fontWeight: FontWeight.w700),
+            headlineSmall: TextStyle(fontWeight: FontWeight.w700),
+            titleLarge: TextStyle(fontWeight: FontWeight.w600),
+            titleMedium: TextStyle(fontWeight: FontWeight.w600),
+            titleSmall: TextStyle(fontWeight: FontWeight.w600),
+            bodyLarge: TextStyle(fontWeight: FontWeight.w400),
+            bodyMedium: TextStyle(fontWeight: FontWeight.w400),
+            bodySmall: TextStyle(fontWeight: FontWeight.w400),
+            labelLarge: TextStyle(fontWeight: FontWeight.w500),
+            labelMedium: TextStyle(fontWeight: FontWeight.w500),
+            labelSmall: TextStyle(fontWeight: FontWeight.w500),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -56,6 +74,58 @@ class MyApp extends StatelessWidget {
               side: BorderSide(
                 color: AppColors.navy.withOpacity(0.1),
               ),
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              textStyle: const TextStyle(
+                fontFamily: 'Manrope',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              textStyle: const TextStyle(
+                fontFamily: 'Manrope',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              textStyle: const TextStyle(
+                fontFamily: 'Manrope',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          appBarTheme: AppBarTheme(
+            titleTextStyle: const TextStyle(
+              fontFamily: 'Manrope',
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
+            toolbarTextStyle: const TextStyle(
+              fontFamily: 'Manrope',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            selectedLabelStyle: TextStyle(
+              fontFamily: 'Manrope',
+              fontWeight: FontWeight.w600,
+            ),
+            unselectedLabelStyle: TextStyle(
+              fontFamily: 'Manrope',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          snackBarTheme: SnackBarThemeData(
+            contentTextStyle: TextStyle(
+              fontFamily: 'Manrope',
+              fontWeight: FontWeight.w500,
+              color: AppColors.lightGrey,
             ),
           ),
         ),
