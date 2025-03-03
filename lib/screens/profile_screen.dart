@@ -1,11 +1,215 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/auth_provider.dart';
 import '../constants/app_colors.dart';
 import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Future<void> _launchUrl(BuildContext context, String url) async {
+    try {
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://$url';
+      }
+
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+          webViewConfiguration: const WebViewConfiguration(
+            enableJavaScript: true,
+            enableDomStorage: true,
+          ),
+        );
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Could not open link. Please try again later.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open link. Please try again later.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showAboutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.info_outline,
+                        color: AppColors.accent,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'About',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                // App Info
+                Text(
+                  'Chit Tracker',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.navy,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Version 1.0.0',
+                  style: TextStyle(
+                    color: AppColors.darkGrey,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Author Info
+                Text(
+                  'About the Author',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.navy,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.person_outline,
+                      color: AppColors.accent,
+                      size: 24,
+                    ),
+                  ),
+                  title: Text(
+                    'Abel Boby',
+                    style: TextStyle(
+                      color: AppColors.navy,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Flutter Developer',
+                    style: TextStyle(color: AppColors.darkGrey),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Social Links
+                InkWell(
+                  onTap: () => _launchUrl(
+                    context,
+                    'https://github.com/abelboby',
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.navy.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.code,
+                          color: AppColors.navy,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'GitHub',
+                          style: TextStyle(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '@abelboby',
+                          style: TextStyle(
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: AppColors.darkGrey,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Close Button
+                Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
+                    ),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(color: AppColors.accent),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildProfileOption({
     required BuildContext context,
@@ -220,9 +424,7 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.info_outline,
                   title: 'About',
                   subtitle: 'Learn more about Income Tracker',
-                  onTap: () {
-                    // Handle about tap
-                  },
+                  onTap: () => _showAboutDialog(context),
                 ),
                 _buildProfileOption(
                   context: context,
