@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../providers/auth_provider.dart';
 import '../providers/finance_provider.dart';
+import '../providers/category_provider.dart';
+import '../models/category_model.dart';
 import '../screens/income_details_screen.dart';
 import '../widgets/add_income_dialog.dart';
 import '../constants/app_colors.dart';
@@ -285,36 +288,88 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 12),
+                                    const SizedBox(height: 8),
                                     Row(
                                       children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                AppColors.navy.withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Icon(
-                                            Icons.calendar_today_outlined,
-                                            size: 16,
-                                            color: AppColors.navy,
-                                          ),
+                                        Icon(
+                                          Icons.calendar_today_outlined,
+                                          size: 16,
+                                          color: AppColors.darkGrey,
                                         ),
-                                        const SizedBox(width: 8),
+                                        const SizedBox(width: 6),
                                         Text(
                                           DateFormat('MMM dd, yyyy')
                                               .format(income.dateTime),
                                           style: TextStyle(
-                                            color: AppColors.navy,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                              color: AppColors.darkGrey),
                                         ),
                                       ],
                                     ),
+
+                                    // Show category if available
+                                    Builder(
+                                      builder: (context) {
+                                        final categoryProvider =
+                                            context.watch<CategoryProvider>();
+                                        if (!categoryProvider.isEnabled ||
+                                            income.category == null) {
+                                          return const SizedBox.shrink();
+                                        }
+
+                                        final categoryName =
+                                            categoryProvider.categories
+                                                .firstWhere(
+                                                  (c) =>
+                                                      c.id == income.category,
+                                                  orElse: () => CategoryModel(
+                                                    id: '',
+                                                    name: 'Unknown',
+                                                    isDefault: false,
+                                                    createdAt: DateTime.now(),
+                                                  ),
+                                                )
+                                                .name;
+
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.category_outlined,
+                                                size: 16,
+                                                color: AppColors.darkGrey,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 2,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.accent
+                                                      .withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  categoryName,
+                                                  style: TextStyle(
+                                                    color: AppColors.darkGrey,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+
+                                    const SizedBox(height: 12),
                                     if (income.notes != null) ...[
-                                      const SizedBox(height: 12),
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(

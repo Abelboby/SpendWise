@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/finance_provider.dart';
+import '../providers/category_provider.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_icons.dart';
 
@@ -41,15 +42,7 @@ class AnalyticsScreen extends StatelessWidget {
                     color: AppColors.accent.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: SvgPicture.asset(
-                    AppIcons.wallet,
-                    width: 24,
-                    height: 24,
-                    colorFilter: ColorFilter.mode(
-                      AppColors.accent,
-                      BlendMode.srcIn,
-                    ),
-                  ),
+                  child: Icon(icon, color: AppColors.accent),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -159,6 +152,133 @@ class AnalyticsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildCategoryAnalyticsCard(BuildContext context) {
+    final categoryProvider = Provider.of<CategoryProvider>(context);
+    final financeProvider = Provider.of<FinanceProvider>(context);
+    final categories = categoryProvider.categories;
+    final isEnabled = categoryProvider.isEnabled;
+
+    if (!isEnabled || categories.isEmpty) {
+      return Container();
+    }
+
+    return _buildAnalyticCard(
+      context: context,
+      title: 'Category Analysis',
+      icon: Icons.category_outlined,
+      child: Column(
+        children: categories.map((category) {
+          final incomes = financeProvider.incomes
+              .where((income) => income.category == category.id)
+              .toList();
+          final totalIncome =
+              incomes.fold(0.0, (sum, income) => sum + income.amount);
+
+          final expenses = financeProvider.expensesByIncome.values
+              .expand((expenses) => expenses)
+              .where((expense) => expense.category == category.id)
+              .toList();
+          final totalExpenses =
+              expenses.fold(0.0, (sum, expense) => sum + expense.amount);
+
+          final percentage =
+              totalIncome > 0 ? (totalExpenses / totalIncome * 100) : 0;
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          category.name,
+                          style: TextStyle(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '${percentage.toStringAsFixed(1)}%',
+                          style: TextStyle(
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Income: Rs. ${NumberFormat('#,##0.00').format(totalIncome)}',
+                              style: TextStyle(
+                                color: AppColors.darkGrey,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Expenses: Rs. ${NumberFormat('#,##0.00').format(totalExpenses)}',
+                              style: TextStyle(
+                                color: AppColors.darkGrey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: 60,
+                          height: 60,
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: CircularProgressIndicator(
+                                  value: percentage / 100,
+                                  backgroundColor: AppColors.lightGrey,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    percentage > 90
+                                        ? Colors.red[400]!
+                                        : percentage > 70
+                                            ? Colors.orange[400]!
+                                            : Colors.green[400]!,
+                                  ),
+                                  strokeWidth: 8,
+                                ),
+                              ),
+                              if (category.iconCodePoint != null)
+                                Center(
+                                  child: Icon(
+                                    IconData(category.iconCodePoint!,
+                                        fontFamily: category.iconFontFamily),
+                                    size: 24,
+                                    color: AppColors.navy,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              if (categories.last.id != category.id) const Divider(height: 1),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   Widget _buildMetricItem(
     BuildContext context,
     String title,
@@ -225,7 +345,7 @@ class AnalyticsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           _buildOverviewCard(context),
-          // Add more analytics cards here in the future
+          _buildCategoryAnalyticsCard(context),
         ],
       ),
     );
