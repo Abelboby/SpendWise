@@ -130,7 +130,12 @@ class SpaceProvider extends ChangeNotifier {
       throw Exception('User not initialized');
     }
 
-    final space = _spaces.firstWhere((space) => space.id == spaceId);
+    final spaceIndex = _spaces.indexWhere((space) => space.id == spaceId);
+    if (spaceIndex == -1) {
+      throw Exception('Space not found');
+    }
+
+    final space = _spaces[spaceIndex];
 
     // Only owner can update roles
     if (!space.isOwner(_userId!)) {
@@ -142,6 +147,7 @@ class SpaceProvider extends ChangeNotifier {
       throw Exception('Cannot change owner\'s role');
     }
 
+    // Create updated members list for optimistic update
     final updatedMembers = space.members.map((member) {
       if (member.userId == memberId) {
         return SpaceMember(
@@ -155,9 +161,33 @@ class SpaceProvider extends ChangeNotifier {
       return member;
     }).toList();
 
-    await _firestore.collection(_spacesCollection).doc(spaceId).update({
-      'members': updatedMembers.map((member) => member.toMap()).toList(),
-    });
+    // Create updated space for optimistic update
+    final updatedSpace = SpaceModel(
+      id: space.id,
+      name: space.name,
+      description: space.description,
+      ownerId: space.ownerId,
+      createdAt: space.createdAt,
+      inviteCode: space.inviteCode,
+      members: updatedMembers,
+      isPublic: space.isPublic,
+    );
+
+    // Update local state immediately
+    _spaces[spaceIndex] = updatedSpace;
+    notifyListeners();
+
+    try {
+      // Update Firestore in the background
+      await _firestore.collection(_spacesCollection).doc(spaceId).update({
+        'members': updatedMembers.map((member) => member.toMap()).toList(),
+      });
+    } catch (e) {
+      // If update fails, revert to original state
+      _spaces[spaceIndex] = space;
+      notifyListeners();
+      rethrow;
+    }
   }
 
   Future<void> removeMember(String spaceId, String memberId) async {
