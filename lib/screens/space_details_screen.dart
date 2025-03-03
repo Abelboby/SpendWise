@@ -9,6 +9,8 @@ import '../providers/finance_provider.dart';
 import '../widgets/add_income_dialog.dart';
 import '../widgets/add_expense_dialog.dart';
 import '../screens/income_details_screen.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 class SpaceDetailsScreen extends StatefulWidget {
   final SpaceModel space;
@@ -291,6 +293,118 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
     );
   }
 
+  void _showShareDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.share_outlined,
+                      color: AppColors.accent,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Share Space',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppColors.navy,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Share this invite code with others',
+                style: TextStyle(
+                  color: AppColors.darkGrey,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.lightGrey,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.navy.withOpacity(0.1),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.space.inviteCode,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: AppColors.navy,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        await Clipboard.setData(
+                          ClipboardData(text: widget.space.inviteCode),
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  const Text('Invite code copied to clipboard'),
+                              backgroundColor: AppColors.accent,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: Icon(
+                        Icons.copy,
+                        color: AppColors.accent,
+                      ),
+                      tooltip: 'Copy to clipboard',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.darkGrey,
+                ),
+                child: const Text('Close'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -356,69 +470,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                           subtitle: const Text('Invite members to join'),
                           onTap: () {
                             Navigator.pop(context);
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                title: Text(
-                                  'Share Space',
-                                  style: TextStyle(color: AppColors.navy),
-                                ),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Space ID:',
-                                      style: TextStyle(
-                                        color: AppColors.darkGrey,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.navy.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              widget.space.id,
-                                              style: TextStyle(
-                                                color: AppColors.navy,
-                                                fontFamily: 'monospace',
-                                              ),
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.copy),
-                                            color: AppColors.accent,
-                                            onPressed: () {
-                                              // Copy to clipboard
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: AppColors.darkGrey,
-                                    ),
-                                    child: const Text('Close'),
-                                  ),
-                                ],
-                              ),
-                            );
+                            _showShareDialog(context);
                           },
                         ),
                         if (isOwner) ...[
