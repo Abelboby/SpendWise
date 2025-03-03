@@ -98,9 +98,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 _buildAmountColumn(
                   context,
                   'Total Income',
@@ -142,8 +142,8 @@ class HomeScreen extends StatelessWidget {
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: AppColors.navy,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -172,14 +172,14 @@ class HomeScreen extends StatelessWidget {
                         background: Container(
                           margin: const EdgeInsets.only(bottom: 16),
                           decoration: BoxDecoration(
-                            color: AppColors.accent,
+                            color: Colors.red[400],
                             borderRadius: BorderRadius.circular(16),
                           ),
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.only(right: 24),
-                          child: Icon(
+                          child: const Icon(
                             Icons.delete_outline,
-                            color: AppColors.lightGrey,
+                            color: Colors.white,
                             size: 28,
                           ),
                         ),
@@ -364,12 +364,12 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     },
