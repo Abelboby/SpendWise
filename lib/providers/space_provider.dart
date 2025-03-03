@@ -160,6 +160,41 @@ class SpaceProvider extends ChangeNotifier {
     });
   }
 
+  Future<void> removeMember(String spaceId, String memberId) async {
+    if (_userId == null) {
+      throw Exception('User not initialized');
+    }
+
+    final space = _spaces.firstWhere((space) => space.id == spaceId);
+
+    // Only owner and editors can remove members
+    if (!space.canManageMembers(_userId!)) {
+      throw Exception('You do not have permission to remove members');
+    }
+
+    // Cannot remove the owner
+    if (memberId == space.ownerId) {
+      throw Exception('Cannot remove the owner of the space');
+    }
+
+    // Cannot remove members with higher roles
+    final currentMember = space.getMember(_userId!)!;
+    final targetMember = space.getMember(memberId)!;
+    if (currentMember.role == SpaceRole.editor &&
+        (targetMember.role == SpaceRole.owner ||
+            targetMember.role == SpaceRole.editor)) {
+      throw Exception('Cannot remove members with equal or higher roles');
+    }
+
+    final updatedMembers =
+        space.members.where((member) => member.userId != memberId).toList();
+
+    await _firestore.collection(_spacesCollection).doc(spaceId).update({
+      'members': updatedMembers.map((member) => member.toMap()).toList(),
+      'memberIds': FieldValue.arrayRemove([memberId]),
+    });
+  }
+
   Future<void> leaveSpace(String spaceId) async {
     if (_userId == null) {
       throw Exception('User not initialized');
@@ -169,7 +204,8 @@ class SpaceProvider extends ChangeNotifier {
 
     // Owner cannot leave, they must delete the space
     if (space.isOwner(_userId!)) {
-      throw Exception('Owner cannot leave the space');
+      throw Exception(
+          'Owner cannot leave the space. Delete the space instead.');
     }
 
     final updatedMembers =

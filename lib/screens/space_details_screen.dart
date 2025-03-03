@@ -44,6 +44,253 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
     super.dispose();
   }
 
+  Future<void> _showMemberOptions(BuildContext context, SpaceMember member) {
+    final spaceProvider = context.read<SpaceProvider>();
+    final authProvider = context.read<AuthProvider>();
+    final isCurrentUser = member.userId == authProvider.uid;
+    final canManageMembers = widget.space.canManageMembers(authProvider.uid);
+    final isOwner = widget.space.isOwner(authProvider.uid);
+
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.accent.withOpacity(0.1),
+                      ),
+                      child: member.photoUrl != null
+                          ? ClipOval(
+                              child: Image.network(
+                                member.photoUrl!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Icon(
+                              Icons.person,
+                              color: AppColors.accent,
+                            ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            member.displayName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: AppColors.navy,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          Text(
+                            member.role
+                                .toString()
+                                .split('.')
+                                .last
+                                .toUpperCase(),
+                            style: TextStyle(
+                              color: AppColors.darkGrey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              if (isCurrentUser && !isOwner)
+                ListTile(
+                  leading: const Icon(Icons.exit_to_app, color: Colors.red),
+                  title: const Text(
+                    'Leave Space',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  subtitle: const Text('Remove yourself from this space'),
+                  onTap: () async {
+                    try {
+                      await spaceProvider.leaveSpace(widget.space.id);
+                      if (context.mounted) {
+                        Navigator.of(context).pop(); // Close bottom sheet
+                        Navigator.of(context).pop(); // Return to spaces list
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        Navigator.of(context).pop(); // Close bottom sheet
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+              if (!isCurrentUser && canManageMembers)
+                ListTile(
+                  leading: const Icon(Icons.person_remove, color: Colors.red),
+                  title: const Text(
+                    'Remove from Space',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  subtitle: const Text('Remove this member from the space'),
+                  onTap: () async {
+                    try {
+                      await spaceProvider.removeMember(
+                          widget.space.id, member.userId);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+              if (!isCurrentUser && isOwner && member.role != SpaceRole.owner)
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: const Text('Change Role'),
+                  subtitle: const Text('Update member\'s permissions'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showChangeRoleDialog(context, member);
+                  },
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showChangeRoleDialog(BuildContext context, SpaceMember member) {
+    final spaceProvider = context.read<SpaceProvider>();
+    SpaceRole selectedRole = member.role;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          'Change Role',
+          style: TextStyle(color: AppColors.navy),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Select a new role for ${member.displayName}',
+              style: TextStyle(color: AppColors.darkGrey),
+            ),
+            const SizedBox(height: 16),
+            ...SpaceRole.values
+                .where(
+                    (role) => role != SpaceRole.owner) // Cannot change to owner
+                .map(
+                  (role) => RadioListTile<SpaceRole>(
+                    value: role,
+                    groupValue: selectedRole,
+                    onChanged: (value) {
+                      if (value != null) {
+                        selectedRole = value;
+                        (context as Element).markNeedsBuild();
+                      }
+                    },
+                    title: Text(role.toString().split('.').last.toUpperCase()),
+                    subtitle: Text(
+                      role == SpaceRole.editor
+                          ? 'Can manage members and finances'
+                          : 'Can only view and add expenses',
+                    ),
+                  ),
+                )
+                .toList(),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.darkGrey,
+            ),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                await spaceProvider.updateMemberRole(
+                  widget.space.id,
+                  member.userId,
+                  selectedRole,
+                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Update Role'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -517,15 +764,24 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.accent.withOpacity(0.2),
-                    child: Text(
-                      member.displayName[0].toUpperCase(),
-                      style: TextStyle(
-                        color: AppColors.accent,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.accent.withOpacity(0.1),
                     ),
+                    child: member.photoUrl != null
+                        ? ClipOval(
+                            child: Image.network(
+                              member.photoUrl!,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Icon(
+                            Icons.person,
+                            color: AppColors.accent,
+                          ),
                   ),
                   title: Text(
                     member.displayName,
@@ -534,31 +790,14 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                     ),
                   ),
                   subtitle: Text(
-                    member.role.name[0].toUpperCase() +
-                        member.role.name.substring(1),
+                    member.role.toString().split('.').last.toUpperCase(),
                     style: TextStyle(
-                      color: AppColors.darkGrey,
+                      color: member.role == SpaceRole.owner
+                          ? const Color(0xFF4CAF50)
+                          : AppColors.darkGrey,
                     ),
                   ),
-                  trailing: member.role == SpaceRole.owner
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'Owner',
-                            style: TextStyle(
-                              color: AppColors.accent,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                      : null,
+                  onTap: () => _showMemberOptions(context, member),
                 ),
               );
             },

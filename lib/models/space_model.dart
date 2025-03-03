@@ -107,6 +107,12 @@ class SpaceModel {
         (member.role == SpaceRole.owner || member.role == SpaceRole.editor);
   }
 
+  bool canManageMembers(String userId) {
+    final member = getMember(userId);
+    return member != null &&
+        (member.role == SpaceRole.owner || member.role == SpaceRole.editor);
+  }
+
   bool isOwner(String userId) {
     return ownerId == userId;
   }
