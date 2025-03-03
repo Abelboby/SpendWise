@@ -1,108 +1,144 @@
-import 'package:flutter/material.dart';
-import '../models/category.dart';
-import '../services/firestore_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../models/category_model.dart';
 
 class CategoryProvider with ChangeNotifier {
-  final List<Category> _categories = [];
-  final _uuid = const Uuid();
-  final _firestoreService = FirestoreService();
-  final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String _usersCollection = 'users';
+  final String _categoriesCollection = 'categories';
+  List<CategoryModel> _categories = [];
+  bool _isEnabled = false;
+  String? _userId;
 
-  CategoryProvider() {
-    _initializeData();
+  List<CategoryModel> get categories => _categories;
+  bool get isEnabled => _isEnabled;
+
+  void initialize(String userId) {
+    _userId = userId;
+    _loadSettings();
+    _listenToCategories();
   }
 
-  void _initializeData() {
-    final user = _auth.currentUser;
-    if (user != null) {
-      // Listen to categories
-      _firestoreService.getCategories(user.uid).listen((categories) {
-        _categories.clear();
-        _categories.addAll(categories);
+  Future<void> _loadSettings() async {
+    if (_userId == null) return;
 
-        // Add default categories if none exist
-        if (_categories.isEmpty) {
-          _initializeDefaultCategories();
-        }
-
-        notifyListeners();
-      });
-    }
-  }
-
-  List<Category> get categories => [..._categories];
-
-  Future<void> _initializeDefaultCategories() async {
-    final user = _auth.currentUser;
-    if (user == null) return;
-
-    await addCategory(
-      name: 'Home',
-      icon: Icons.home,
-      isDefault: true,
-    );
-    await addCategory(
-      name: 'Personal',
-      icon: Icons.person,
-      isDefault: true,
-    );
-  }
-
-  Category? getCategoryById(String id) {
     try {
-      return _categories.firstWhere((category) => category.id == id);
+      final userDoc =
+          await _firestore.collection(_usersCollection).doc(_userId).get();
+
+      if (userDoc.exists) {
+        final data = userDoc.data();
+        _isEnabled = data?['categoriesEnabled'] ?? false;
+        notifyListeners();
+      }
     } catch (e) {
-      return null;
+      debugPrint('Error loading category settings: $e');
     }
+  }
+
+  Future<void> toggleCategoryFeature(bool enabled) async {
+    if (_userId == null) return;
+
+    try {
+      await _firestore
+          .collection(_usersCollection)
+          .doc(_userId)
+          .set({'categoriesEnabled': enabled}, SetOptions(merge: true));
+
+      _isEnabled = enabled;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error toggling category feature: $e');
+      rethrow;
+    }
+  }
+
+  void _listenToCategories() {
+    if (_userId == null) return;
+
+    _firestore
+        .collection(_usersCollection)
+        .doc(_userId)
+        .collection(_categoriesCollection)
+        .snapshots()
+        .listen((snapshot) {
+      _categories = snapshot.docs
+          .map((doc) => CategoryModel.fromMap(doc.data()))
+          .toList();
+      notifyListeners();
+    });
+  }
+
+  Future<void> addDefaultCategories() async {
+    if (_userId == null) return;
+
+    final batch = _firestore.batch();
+    final defaultCategories = [
+      CategoryModel(
+        id: const Uuid().v4(),
+        name: 'Personal',
+        description: 'Personal expenses and incomes',
+        isDefault: true,
+        createdAt: DateTime.now(),
+      ),
+      CategoryModel(
+        id: const Uuid().v4(),
+        name: 'Business',
+        description: 'Business related transactions',
+        isDefault: true,
+        createdAt: DateTime.now(),
+      ),
+    ];
+
+    for (var category in defaultCategories) {
+      final docRef = _firestore
+          .collection(_usersCollection)
+          .doc(_userId)
+          .collection(_categoriesCollection)
+          .doc(category.id);
+      batch.set(docRef, category.toMap());
+    }
+
+    await batch.commit();
   }
 
   Future<void> addCategory({
     required String name,
-    required IconData icon,
-    bool isDefault = false,
+    String? description,
   }) async {
-    final user = _auth.currentUser;
-    if (user == null) return;
+    if (_userId == null) return;
 
-    final category = Category(
-      id: _uuid.v4(),
+    final category = CategoryModel(
+      id: const Uuid().v4(),
       name: name,
-      icon: icon,
-      isDefault: isDefault,
+      description: description,
+      isDefault: false,
+      createdBy: _userId,
+      createdAt: DateTime.now(),
     );
 
-    await _firestoreService.addCategory(user.uid, category);
+    await _firestore
+        .collection(_usersCollection)
+        .doc(_userId)
+        .collection(_categoriesCollection)
+        .doc(category.id)
+        .set(category.toMap());
   }
 
-  Future<void> addCustomCategory(String name, IconData icon) async {
-    await addCategory(name: name, icon: icon);
-  }
+  Future<void> deleteCategory(String categoryId) async {
+    if (_userId == null) return;
 
-  Future<void> deleteCategory(String id) async {
-    final user = _auth.currentUser;
-    if (user == null) return;
-
-    final category = getCategoryById(id);
-    if (category != null && !category.isDefault) {
-      await _firestoreService.deleteCategory(user.uid, id);
+    final category = _categories.firstWhere((c) => c.id == categoryId);
+    if (category.isDefault) {
+      throw Exception('Cannot delete default categories');
     }
-  }
 
-  Future<void> updateCategory(String id, String name, IconData icon) async {
-    final user = _auth.currentUser;
-    if (user == null) return;
-
-    final index = _categories.indexWhere((cat) => cat.id == id);
-    if (index != -1 && !_categories[index].isDefault) {
-      final category = Category(
-        id: id,
-        name: name,
-        icon: icon,
-        isDefault: false,
-      );
-      await _firestoreService.addCategory(user.uid, category);
-    }
+    await _firestore
+        .collection(_usersCollection)
+        .doc(_userId)
+        .collection(_categoriesCollection)
+        .doc(categoryId)
+        .delete();
   }
 }

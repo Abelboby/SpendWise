@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../constants/app_colors.dart';
 import '../models/income_model.dart';
 import '../providers/finance_provider.dart';
+import '../providers/category_provider.dart';
 
 class AddExpenseDialog extends StatefulWidget {
   final IncomeModel income;
@@ -22,8 +23,8 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime _selectedDateTime = DateTime.now();
+  String? _selectedCategoryId;
   bool _isLoading = false;
 
   @override
@@ -34,62 +35,83 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
     super.dispose();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  Future<void> _selectDateTime() async {
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: _selectedDateTime,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppColors.accent,
-              onPrimary: Colors.white,
-              surface: AppColors.lightGrey,
-              onSurface: AppColors.navy,
-            ),
-            dialogBackgroundColor: AppColors.lightGrey,
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: AppColors.accent,
+                  onPrimary: Colors.white,
+                  surface: AppColors.lightGrey,
+                  onSurface: AppColors.navy,
+                ),
           ),
           child: child!,
         );
       },
     );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    primary: AppColors.accent,
+                    onPrimary: Colors.white,
+                    surface: AppColors.lightGrey,
+                    onSurface: AppColors.navy,
+                  ),
+            ),
+            child: child!,
+          );
+        },
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          _selectedDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        });
+      }
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppColors.accent,
-              onPrimary: Colors.white,
-              surface: AppColors.lightGrey,
-              onSurface: AppColors.navy,
-            ),
-            dialogBackgroundColor: AppColors.lightGrey,
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-      });
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final financeProvider = context.read<FinanceProvider>();
+
+      financeProvider.addExpense(
+        description: _descriptionController.text,
+        amount: double.parse(_amountController.text),
+        dateTime: _selectedDateTime,
+        incomeId: widget.income.id,
+        notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+        category: _selectedCategoryId,
+      );
+
+      Navigator.of(context).pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final categoryProvider = context.watch<CategoryProvider>();
+    final categories = categoryProvider.categories;
+    final isCategoriesEnabled = categoryProvider.isEnabled;
+
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
@@ -188,72 +210,82 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _selectDate(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppColors.navy.withOpacity(0.1),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today_outlined,
-                              color: AppColors.darkGrey,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              DateFormat('MMM dd, yyyy').format(_selectedDate),
-                              style: TextStyle(color: AppColors.navy),
-                            ),
-                          ],
-                        ),
-                      ),
+              if (isCategoriesEnabled && categories.isNotEmpty) ...[
+                DropdownButtonFormField<String>(
+                  value: _selectedCategoryId,
+                  decoration: InputDecoration(
+                    labelText: 'Category (Optional)',
+                    labelStyle: TextStyle(color: AppColors.darkGrey),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: AppColors.accent),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _selectTime(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppColors.navy.withOpacity(0.1),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.access_time_outlined,
-                              color: AppColors.darkGrey,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              _selectedTime.format(context),
-                              style: TextStyle(color: AppColors.navy),
-                            ),
-                          ],
-                        ),
-                      ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: AppColors.darkGrey.withOpacity(0.3)),
                     ),
+                    prefixIcon: Icon(Icons.category_outlined,
+                        color: AppColors.darkGrey),
                   ),
-                ],
+                  items: [
+                    const DropdownMenuItem<String>(
+                      value: null,
+                      child: Text('No Category'),
+                    ),
+                    ...categories.map((category) {
+                      return DropdownMenuItem<String>(
+                        value: category.id,
+                        child: Text(category.name),
+                      );
+                    }).toList(),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCategoryId = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
+              InkWell(
+                onTap: _selectDateTime,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: AppColors.darkGrey.withOpacity(0.3)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today, color: AppColors.darkGrey),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Date & Time',
+                            style: TextStyle(
+                              color: AppColors.darkGrey,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            DateFormat('MMM dd, yyyy hh:mm a')
+                                .format(_selectedDateTime),
+                            style: TextStyle(
+                              color: AppColors.navy,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -293,58 +325,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () async {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                _isLoading = true;
-                              });
-
-                              try {
-                                final dateTime = DateTime(
-                                  _selectedDate.year,
-                                  _selectedDate.month,
-                                  _selectedDate.day,
-                                  _selectedTime.hour,
-                                  _selectedTime.minute,
-                                );
-
-                                await context
-                                    .read<FinanceProvider>()
-                                    .addExpense(
-                                      description: _descriptionController.text,
-                                      amount:
-                                          double.parse(_amountController.text),
-                                      dateTime: dateTime,
-                                      notes: _notesController.text.isEmpty
-                                          ? null
-                                          : _notesController.text,
-                                      incomeId: widget.income.id,
-                                    );
-
-                                if (context.mounted) {
-                                  Navigator.pop(context);
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          'Error adding expense: ${e.toString()}'),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                }
-                              } finally {
-                                if (mounted) {
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
-                                }
-                              }
-                            }
-                          },
+                    onPressed: _isLoading ? null : _submitForm,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.accent,
                       foregroundColor: Colors.white,

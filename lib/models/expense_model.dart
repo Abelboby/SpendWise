@@ -9,6 +9,7 @@ class ExpenseModel {
   final String incomeId;
   final String? spaceId;
   final String? createdBy;
+  final String? category;
 
   const ExpenseModel({
     required this.id,
@@ -19,6 +20,7 @@ class ExpenseModel {
     this.notes,
     this.spaceId,
     this.createdBy,
+    this.category,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +33,7 @@ class ExpenseModel {
       'incomeId': incomeId,
       'spaceId': spaceId,
       'createdBy': createdBy,
+      'category': category,
     };
   }
 
@@ -44,6 +47,7 @@ class ExpenseModel {
       incomeId: map['incomeId'] as String,
       spaceId: map['spaceId'] as String?,
       createdBy: map['createdBy'] as String?,
+      category: map['category'] as String?,
     );
   }
 
@@ -56,6 +60,7 @@ class ExpenseModel {
     String? incomeId,
     String? spaceId,
     String? createdBy,
+    String? category,
   }) {
     return ExpenseModel(
       id: id ?? this.id,
@@ -66,6 +71,7 @@ class ExpenseModel {
       incomeId: incomeId ?? this.incomeId,
       spaceId: spaceId ?? this.spaceId,
       createdBy: createdBy ?? this.createdBy,
+      category: category ?? this.category,
     );
   }
 }

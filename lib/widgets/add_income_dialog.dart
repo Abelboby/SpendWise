@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/finance_provider.dart';
+import '../providers/category_provider.dart';
 import '../constants/app_colors.dart';
 
 class AddIncomeDialog extends StatefulWidget {
@@ -17,6 +18,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
   DateTime _selectedDateTime = DateTime.now();
+  String? _selectedCategoryId;
 
   @override
   void dispose() {
@@ -89,6 +91,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
         description: _descriptionController.text,
         dateTime: _selectedDateTime,
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+        category: _selectedCategoryId,
       );
 
       Navigator.of(context).pop();
@@ -97,6 +100,10 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final categoryProvider = context.watch<CategoryProvider>();
+    final categories = categoryProvider.categories;
+    final isCategoriesEnabled = categoryProvider.isEnabled;
+
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
@@ -197,6 +204,44 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                   },
                 ),
                 const SizedBox(height: 16),
+                if (isCategoriesEnabled && categories.isNotEmpty) ...[
+                  DropdownButtonFormField<String>(
+                    value: _selectedCategoryId,
+                    decoration: InputDecoration(
+                      labelText: 'Category (Optional)',
+                      labelStyle: TextStyle(color: AppColors.darkGrey),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.accent),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                            color: AppColors.darkGrey.withOpacity(0.3)),
+                      ),
+                      prefixIcon: Icon(Icons.category_outlined,
+                          color: AppColors.darkGrey),
+                    ),
+                    items: [
+                      const DropdownMenuItem<String>(
+                        value: null,
+                        child: Text('No Category'),
+                      ),
+                      ...categories.map((category) {
+                        return DropdownMenuItem<String>(
+                          value: category.id,
+                          child: Text(category.name),
+                        );
+                      }).toList(),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCategoryId = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 InkWell(
                   onTap: _selectDateTime,
                   borderRadius: BorderRadius.circular(12),

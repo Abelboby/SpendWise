@@ -100,6 +100,7 @@ class FinanceProvider with ChangeNotifier {
     required DateTime dateTime,
     required String incomeId,
     String? notes,
+    String? category,
   }) async {
     try {
       final expense = ExpenseModel(
@@ -111,6 +112,7 @@ class FinanceProvider with ChangeNotifier {
         incomeId: incomeId,
         spaceId: _currentSpaceId,
         createdBy: _userId,
+        category: category,
       );
 
       await _financeService.addExpense(expense);

@@ -144,6 +144,10 @@ class MyApp extends StatelessWidget {
                 final spaceProvider =
                     Provider.of<SpaceProvider>(context, listen: false);
                 spaceProvider.initialize(authProvider.uid);
+
+                final categoryProvider =
+                    Provider.of<CategoryProvider>(context, listen: false);
+                categoryProvider.initialize(authProvider.uid);
               });
 
               return const MainNavigationScreen();
