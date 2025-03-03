@@ -100,6 +100,29 @@ class IncomeDetailsScreen extends StatelessWidget {
                   DateFormat('MMMM dd, yyyy').format(income.dateTime),
                   style: TextStyle(color: AppColors.lightGrey.withOpacity(0.8)),
                 ),
+                if (income.notes != null) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.notes_outlined,
+                        size: 16,
+                        color: AppColors.lightGrey.withOpacity(0.8),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          income.notes!,
+                          style: TextStyle(
+                            color: AppColors.lightGrey.withOpacity(0.8),
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,33 +149,6 @@ class IncomeDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (income.notes != null) ...[
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.lightGrey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Notes:',
-                          style: TextStyle(
-                            color: AppColors.lightGrey.withOpacity(0.8),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          income.notes!,
-                          style: TextStyle(color: AppColors.lightGrey),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
@@ -250,9 +246,25 @@ class IncomeDetailsScreen extends StatelessWidget {
                           ),
                           if (expense.notes != null) ...[
                             const SizedBox(height: 12),
-                            Text(
-                              expense.notes!,
-                              style: TextStyle(color: AppColors.darkGrey),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.notes_outlined,
+                                  size: 16,
+                                  color: AppColors.darkGrey,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    expense.notes!,
+                                    style: TextStyle(
+                                      color: AppColors.darkGrey,
+                                      fontSize: 14,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ],
