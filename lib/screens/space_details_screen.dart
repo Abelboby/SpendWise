@@ -418,6 +418,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
       appBar: AppBar(
         backgroundColor: AppColors.navy,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
