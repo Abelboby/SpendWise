@@ -17,13 +17,35 @@ class HomeScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
+            icon: Icon(
+              Icons.warning_rounded,
+              color: Colors.red[400],
+              size: 48,
+            ),
             title: Text(
               'Delete Income',
-              style: TextStyle(color: AppColors.navy),
+              style: TextStyle(
+                color: Colors.red[400],
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            content: Text(
-              'Are you sure you want to delete this income and all associated expenses?',
-              style: TextStyle(color: AppColors.darkGrey),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Warning: This action cannot be undone!',
+                  style: TextStyle(
+                    color: Colors.red[400],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Are you sure you want to delete this income? All associated expenses will also be permanently deleted.',
+                  style: TextStyle(color: AppColors.darkGrey),
+                ),
+              ],
             ),
             actions: [
               TextButton(
@@ -36,7 +58,8 @@ class HomeScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.accent,
+                  backgroundColor: Colors.red[400],
+                  foregroundColor: Colors.white,
                 ),
                 child: const Text('Delete'),
               ),
