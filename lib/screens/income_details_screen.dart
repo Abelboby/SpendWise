@@ -59,6 +59,11 @@ class IncomeDetailsScreen extends StatelessWidget {
     final remainingAmount =
         financeProvider.getRemainingAmountForIncome(income.id);
 
+    // Define colors for remaining amount
+    final remainingAmountColor = remainingAmount >= 0
+        ? const Color(0xFF4CAF50) // Material Green 500
+        : const Color(0xFFE57373); // Material Red 300
+
     return Scaffold(
       backgroundColor: AppColors.lightGrey,
       appBar: AppBar(
@@ -137,15 +142,13 @@ class IncomeDetailsScreen extends StatelessWidget {
                       context,
                       'Spent',
                       totalExpenses,
-                      Colors.red[400]!,
+                      const Color(0xFFEF5350), // Material Red 400
                     ),
                     _buildAmountColumn(
                       context,
                       'Remaining',
                       remainingAmount,
-                      remainingAmount >= 0
-                          ? AppColors.accent
-                          : Colors.red[400]!,
+                      remainingAmountColor,
                     ),
                   ],
                 ),
