@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/google_sign_in_button.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_icons.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -119,19 +122,26 @@ class _LoginScreenState extends State<LoginScreen>
                       children: [
                         // Logo container with glass effect
                         Container(
-                          padding: const EdgeInsets.all(32),
+                          padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(32),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
-                              width: 1,
-                            ),
+                            color: Colors.white.withOpacity(0.15),
+                            shape: BoxShape.circle,
                           ),
-                          child: const Icon(
-                            Icons.account_balance_wallet,
-                            size: 64,
-                            color: Colors.white,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: SvgPicture.asset(
+                              AppIcons.wallet,
+                              width: 48,
+                              height: 48,
+                              colorFilter: ColorFilter.mode(
+                                AppColors.accent,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 40),

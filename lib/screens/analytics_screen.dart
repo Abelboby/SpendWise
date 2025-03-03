@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/finance_provider.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_icons.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
@@ -39,10 +41,14 @@ class AnalyticsScreen extends StatelessWidget {
                     color: AppColors.accent.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    icon,
-                    color: AppColors.accent,
-                    size: 24,
+                  child: SvgPicture.asset(
+                    AppIcons.wallet,
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(
+                      AppColors.accent,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/finance_provider.dart';
 import '../screens/income_details_screen.dart';
 import '../widgets/add_income_dialog.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_icons.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -87,10 +89,14 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.lightGrey.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                Icons.account_balance_wallet_outlined,
-                color: AppColors.lightGrey,
-                size: 24,
+              child: SvgPicture.asset(
+                AppIcons.wallet,
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(
+                  AppColors.lightGrey,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
             const SizedBox(width: 12),
