@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
 import '../models/category_model.dart';
 
 class CategoryProvider with ChangeNotifier {
@@ -106,6 +107,7 @@ class CategoryProvider with ChangeNotifier {
   Future<void> addCategory({
     required String name,
     String? description,
+    IconData? icon,
   }) async {
     if (_userId == null) return;
 
@@ -116,6 +118,8 @@ class CategoryProvider with ChangeNotifier {
       isDefault: false,
       createdBy: _userId,
       createdAt: DateTime.now(),
+      iconCodePoint: icon?.codePoint,
+      iconFontFamily: icon?.fontFamily,
     );
 
     await _firestore

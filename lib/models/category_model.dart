@@ -7,6 +7,8 @@ class CategoryModel {
   final bool isDefault;
   final String? createdBy;
   final DateTime createdAt;
+  final int? iconCodePoint;
+  final String? iconFontFamily;
 
   const CategoryModel({
     required this.id,
@@ -15,6 +17,8 @@ class CategoryModel {
     required this.isDefault,
     this.createdBy,
     required this.createdAt,
+    this.iconCodePoint,
+    this.iconFontFamily,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +29,8 @@ class CategoryModel {
       'isDefault': isDefault,
       'createdBy': createdBy,
       'createdAt': Timestamp.fromDate(createdAt),
+      'iconCodePoint': iconCodePoint,
+      'iconFontFamily': iconFontFamily,
     };
   }
 
@@ -36,6 +42,8 @@ class CategoryModel {
       isDefault: map['isDefault'] as bool,
       createdBy: map['createdBy'] as String?,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      iconCodePoint: map['iconCodePoint'] as int?,
+      iconFontFamily: map['iconFontFamily'] as String?,
     );
   }
 
@@ -46,6 +54,8 @@ class CategoryModel {
     bool? isDefault,
     String? createdBy,
     DateTime? createdAt,
+    int? iconCodePoint,
+    String? iconFontFamily,
   }) {
     return CategoryModel(
       id: id ?? this.id,
@@ -54,6 +64,8 @@ class CategoryModel {
       isDefault: isDefault ?? this.isDefault,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+      iconFontFamily: iconFontFamily ?? this.iconFontFamily,
     );
   }
 }
