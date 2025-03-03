@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/finance_provider.dart';
+import '../constants/app_colors.dart';
 
 class AddIncomeDialog extends StatefulWidget {
   const AddIncomeDialog({super.key});
@@ -31,12 +32,38 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
       initialDate: _selectedDateTime,
       firstDate: DateTime(2000),
       lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  primary: AppColors.accent,
+                  onPrimary: Colors.white,
+                  surface: AppColors.lightGrey,
+                  onSurface: AppColors.navy,
+                ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    primary: AppColors.accent,
+                    onPrimary: Colors.white,
+                    surface: AppColors.lightGrey,
+                    onSurface: AppColors.navy,
+                  ),
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (pickedTime != null) {
@@ -71,26 +98,61 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(24.0),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Add Income',
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.add_chart,
+                        color: AppColors.accent,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Add Income',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.navy,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _descriptionController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Description',
                     hintText: 'Enter income description',
+                    labelStyle: TextStyle(color: AppColors.darkGrey),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: AppColors.accent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: AppColors.darkGrey.withOpacity(0.3)),
+                    ),
+                    prefixIcon: Icon(Icons.description_outlined,
+                        color: AppColors.darkGrey),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -102,10 +164,22 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _amountController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Amount',
                     hintText: 'Enter amount',
                     prefixText: 'Rs. ',
+                    labelStyle: TextStyle(color: AppColors.darkGrey),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: AppColors.accent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: AppColors.darkGrey.withOpacity(0.3)),
+                    ),
+                    prefixIcon:
+                        Icon(Icons.currency_rupee, color: AppColors.darkGrey),
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -125,19 +199,39 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                 const SizedBox(height: 16),
                 InkWell(
                   onTap: _selectDateTime,
-                  child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Date & Time',
-                      hintText: 'Select date and time',
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          DateFormat('MMM dd, yyyy hh:mm a')
-                              .format(_selectedDateTime),
+                        Icon(Icons.calendar_today, color: AppColors.darkGrey),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Date & Time',
+                              style: TextStyle(
+                                color: AppColors.darkGrey,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              DateFormat('MMM dd, yyyy hh:mm a')
+                                  .format(_selectedDateTime),
+                              style: TextStyle(
+                                color: AppColors.navy,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
-                        const Icon(Icons.calendar_today, size: 20),
                       ],
                     ),
                   ),
@@ -145,9 +239,20 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _notesController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Notes (Optional)',
                     hintText: 'Enter additional notes',
+                    labelStyle: TextStyle(color: AppColors.darkGrey),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: AppColors.accent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: AppColors.darkGrey.withOpacity(0.3)),
+                    ),
+                    prefixIcon: Icon(Icons.notes, color: AppColors.darkGrey),
                   ),
                   maxLines: 3,
                 ),
@@ -157,11 +262,25 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.darkGrey,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
                       child: const Text('Cancel'),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 12),
                     ElevatedButton(
                       onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.accent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       child: const Text('Add Income'),
                     ),
                   ],
