@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'profile_screen.dart';
+import 'spaces_screen.dart';
 import '../constants/app_colors.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
+    const SpacesScreen(),
     const ProfileScreen(),
   ];
 
@@ -40,6 +42,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance_wallet),
             label: 'Incomes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group_work_outlined),
+            label: 'Spaces',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

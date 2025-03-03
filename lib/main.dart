@@ -6,9 +6,11 @@ import 'providers/app_state_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/finance_provider.dart';
+import 'providers/space_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'screens/login_screen.dart';
+import 'constants/app_colors.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,15 +30,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => ExpenseProvider()),
         ChangeNotifierProvider(create: (_) => FinanceProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, SpaceProvider>(
+          create: (context) => SpaceProvider(context.read<AuthProvider>()),
+          update: (context, auth, previous) => previous ?? SpaceProvider(auth),
+        ),
       ],
       child: MaterialApp(
         title: 'Income Tracker',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            primary: Colors.blue,
-            secondary: Colors.orange,
-          ),
+          colorScheme: AppColors.realTheme,
           useMaterial3: true,
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
@@ -52,7 +54,7 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(
-                color: Colors.grey.withOpacity(0.2),
+                color: AppColors.navy.withOpacity(0.1),
               ),
             ),
           ),
@@ -63,10 +65,15 @@ class MyApp extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (authProvider.isAuthenticated) {
-              // Initialize finance provider with user ID
+              // Initialize providers with user ID
               final financeProvider =
                   Provider.of<FinanceProvider>(context, listen: false);
               financeProvider.initialize(authProvider.uid);
+
+              final spaceProvider =
+                  Provider.of<SpaceProvider>(context, listen: false);
+              spaceProvider.initialize(authProvider.uid);
+
               return const MainNavigationScreen();
             }
             return const LoginScreen();
