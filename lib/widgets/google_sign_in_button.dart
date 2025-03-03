@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../constants/app_colors.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   final Function onSuccess;
@@ -51,31 +52,15 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
       });
       await _buttonAnimationController.forward();
 
-      // Show loading indicator
-      _showLoadingDialog();
-
       // Use the AuthProvider to sign in
       await context.read<AuthProvider>().signInWithGoogle();
 
-      // Wait for a moment to show success state
-      await Future.delayed(const Duration(milliseconds: 500));
-
       if (!mounted) return;
-
-      // Remove loading dialog
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
 
       // Call the success callback
       widget.onSuccess();
     } catch (e) {
       if (!mounted) return;
-
-      // Remove loading dialog if showing
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
 
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -100,30 +85,6 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
     }
   }
 
-  void _showLoadingDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => WillPopScope(
-        onWillPop: () async => false,
-        child: Dialog(
-          backgroundColor: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Signing in...'),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
@@ -143,15 +104,21 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTapDown: (_) {
-              _buttonAnimationController.forward();
-            },
-            onTapUp: (_) {
-              _buttonAnimationController.reverse();
-            },
-            onTapCancel: () {
-              _buttonAnimationController.reverse();
-            },
+            onTapDown: _isLoading
+                ? null
+                : (_) {
+                    _buttonAnimationController.forward();
+                  },
+            onTapUp: _isLoading
+                ? null
+                : (_) {
+                    _buttonAnimationController.reverse();
+                  },
+            onTapCancel: _isLoading
+                ? null
+                : () {
+                    _buttonAnimationController.reverse();
+                  },
             onTap: _isLoading ? null : _handleGoogleSignIn,
             borderRadius: BorderRadius.circular(8),
             child: Padding(
@@ -162,18 +129,29 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(
-                    'assets/images/google_logo.png',
-                    height: 24,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Sign in with Google',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                  ),
+                  if (!_isLoading) ...[
+                    Image.asset(
+                      'assets/images/google_logo.png',
+                      height: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Sign in with Google',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                    ),
+                  ] else
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.accent),
+                      ),
+                    ),
                 ],
               ),
             ),

@@ -98,9 +98,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                 _buildAmountColumn(
                   context,
                   'Total Income',
@@ -142,8 +142,8 @@ class HomeScreen extends StatelessWidget {
                           style:
                               Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: AppColors.navy,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -364,12 +364,12 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
                         ),
                       );
                     },
