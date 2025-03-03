@@ -2,140 +2,168 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import '../models/income_model.dart';
 import '../models/expense_model.dart';
+import '../models/space_model.dart';
+import 'package:flutter/foundation.dart';
 
 class FinanceService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _usersCollection = 'users';
   final String _incomesCollection = 'incomes';
   final String _expensesCollection = 'expenses';
+  final String _spacesCollection = 'spaces';
+
+  // Get incomes stream
+  Stream<List<IncomeModel>> getIncomes(String userId, {String? spaceId}) {
+    final incomesRef = spaceId != null
+        ? _firestore
+            .collection(_spacesCollection)
+            .doc(spaceId)
+            .collection(_incomesCollection)
+        : _firestore
+            .collection(_usersCollection)
+            .doc(userId)
+            .collection(_incomesCollection)
+            .where('spaceId', isNull: true); // Only get personal incomes
+
+    return incomesRef.snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => IncomeModel.fromMap(doc.data()))
+          .toList();
+    });
+  }
+
+  // Get expenses stream for a specific income
+  Stream<List<ExpenseModel>> getExpensesForIncome(
+    String userId,
+    String incomeId, {
+    String? spaceId,
+  }) {
+    final expensesRef = spaceId != null
+        ? _firestore
+            .collection(_spacesCollection)
+            .doc(spaceId)
+            .collection(_incomesCollection)
+            .doc(incomeId)
+            .collection(_expensesCollection)
+        : _firestore
+            .collection(_usersCollection)
+            .doc(userId)
+            .collection(_incomesCollection)
+            .doc(incomeId)
+            .collection(_expensesCollection);
+
+    return expensesRef.snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => ExpenseModel.fromMap(doc.data()))
+          .toList();
+    });
+  }
 
   // Add a new income
-  Future<IncomeModel> addIncome({
+  Future<void> addIncome({
     required double amount,
     required String description,
-    required String userId,
     required DateTime dateTime,
+    required String userId,
     String? notes,
     String? category,
+    String? spaceId,
+    String? createdBy,
   }) async {
-    final String id = const Uuid().v4();
     final income = IncomeModel(
-      id: id,
+      id: const Uuid().v4(),
       amount: amount,
       description: description,
       dateTime: dateTime,
-      userId: userId,
       notes: notes,
       category: category,
+      spaceId: spaceId,
+      createdBy: createdBy,
     );
 
-    await _firestore
-        .collection(_usersCollection)
-        .doc(userId)
-        .collection(_incomesCollection)
-        .doc(id)
-        .set(income.toMap());
+    final incomeRef = spaceId != null
+        ? _firestore
+            .collection(_spacesCollection)
+            .doc(spaceId)
+            .collection(_incomesCollection)
+            .doc(income.id)
+        : _firestore
+            .collection(_usersCollection)
+            .doc(userId)
+            .collection(_incomesCollection)
+            .doc(income.id);
 
-    return income;
+    await incomeRef.set(income.toMap());
   }
 
   // Add a new expense
-  Future<ExpenseModel> addExpense({
-    required String incomeId,
-    required double amount,
-    required String description,
-    required String userId,
-    required DateTime dateTime,
-    String? notes,
-    String? category,
-    String? paymentMethod,
-  }) async {
-    final String id = const Uuid().v4();
-    final expense = ExpenseModel(
-      id: id,
-      incomeId: incomeId,
-      amount: amount,
-      description: description,
-      dateTime: dateTime,
-      userId: userId,
-      notes: notes,
-      category: category,
-      paymentMethod: paymentMethod,
-    );
+  Future<void> addExpense(ExpenseModel expense) async {
+    try {
+      final expenseRef = expense.spaceId != null
+          ? _firestore
+              .collection(_spacesCollection)
+              .doc(expense.spaceId)
+              .collection(_incomesCollection)
+              .doc(expense.incomeId)
+              .collection(_expensesCollection)
+              .doc(expense.id)
+          : _firestore
+              .collection(_usersCollection)
+              .doc(expense.createdBy)
+              .collection(_incomesCollection)
+              .doc(expense.incomeId)
+              .collection(_expensesCollection)
+              .doc(expense.id);
 
-    await _firestore
-        .collection(_usersCollection)
-        .doc(userId)
-        .collection(_expensesCollection)
-        .doc(id)
-        .set(expense.toMap());
-
-    return expense;
+      await expenseRef.set(expense.toMap());
+    } catch (e) {
+      debugPrint('Error adding expense: $e');
+      rethrow;
+    }
   }
 
-  // Get all incomes for a user
-  Stream<List<IncomeModel>> getIncomes(String userId) {
-    return _firestore
-        .collection(_usersCollection)
-        .doc(userId)
-        .collection(_incomesCollection)
-        .orderBy('dateTime', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => IncomeModel.fromMap(doc.data()))
-            .toList());
-  }
+  // Delete an income
+  Future<void> deleteIncome(String userId, String incomeId,
+      {String? spaceId}) async {
+    final incomeRef = spaceId != null
+        ? _firestore
+            .collection(_spacesCollection)
+            .doc(spaceId)
+            .collection(_incomesCollection)
+            .doc(incomeId)
+        : _firestore
+            .collection(_usersCollection)
+            .doc(userId)
+            .collection(_incomesCollection)
+            .doc(incomeId);
 
-  // Get expenses for a specific income
-  Stream<List<ExpenseModel>> getExpensesForIncome(
-      String userId, String incomeId) {
-    return _firestore
-        .collection(_usersCollection)
-        .doc(userId)
-        .collection(_expensesCollection)
-        .where('incomeId', isEqualTo: incomeId)
-        .orderBy('dateTime', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ExpenseModel.fromMap(doc.data()))
-            .toList());
-  }
+    // Delete all expenses for this income first
+    final expensesSnapshot =
+        await incomeRef.collection(_expensesCollection).get();
 
-  // Delete an income and its associated expenses
-  Future<void> deleteIncome(String userId, String incomeId) async {
-    // Get all expenses for this income
-    final expensesSnapshot = await _firestore
-        .collection(_usersCollection)
-        .doc(userId)
-        .collection(_expensesCollection)
-        .where('incomeId', isEqualTo: incomeId)
-        .get();
-
-    // Delete all expenses
     final batch = _firestore.batch();
     for (var doc in expensesSnapshot.docs) {
       batch.delete(doc.reference);
     }
-
-    // Delete the income
-    batch.delete(
-      _firestore
-          .collection(_usersCollection)
-          .doc(userId)
-          .collection(_incomesCollection)
-          .doc(incomeId),
-    );
-
+    batch.delete(incomeRef);
     await batch.commit();
   }
 
-  // Delete a specific expense
-  Future<void> deleteExpense(String userId, String expenseId) async {
-    await _firestore
-        .collection(_usersCollection)
-        .doc(userId)
-        .collection(_expensesCollection)
-        .doc(expenseId)
-        .delete();
+  // Delete an expense
+  Future<void> deleteExpense(String userId, String expenseId,
+      {String? spaceId}) async {
+    final expenseRef = spaceId != null
+        ? _firestore
+            .collection(_spacesCollection)
+            .doc(spaceId)
+            .collection(_expensesCollection)
+            .doc(expenseId)
+        : _firestore
+            .collection(_usersCollection)
+            .doc(userId)
+            .collection(_expensesCollection)
+            .doc(expenseId);
+
+    await expenseRef.delete();
   }
 }

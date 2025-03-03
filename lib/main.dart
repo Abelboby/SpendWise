@@ -66,13 +66,15 @@ class MyApp extends StatelessWidget {
             }
             if (authProvider.isAuthenticated) {
               // Initialize providers with user ID
-              final financeProvider =
-                  Provider.of<FinanceProvider>(context, listen: false);
-              financeProvider.initialize(authProvider.uid);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final financeProvider =
+                    Provider.of<FinanceProvider>(context, listen: false);
+                financeProvider.initialize(authProvider.uid);
 
-              final spaceProvider =
-                  Provider.of<SpaceProvider>(context, listen: false);
-              spaceProvider.initialize(authProvider.uid);
+                final spaceProvider =
+                    Provider.of<SpaceProvider>(context, listen: false);
+                spaceProvider.initialize(authProvider.uid);
+              });
 
               return const MainNavigationScreen();
             }

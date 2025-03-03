@@ -284,7 +284,7 @@ class IncomeDetailsScreen extends StatelessWidget {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (_) => AddExpenseDialog(incomeId: income.id),
+            builder: (_) => AddExpenseDialog(income: income),
           );
         },
         backgroundColor: AppColors.accent,

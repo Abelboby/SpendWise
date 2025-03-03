@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'home_screen.dart';
 import 'profile_screen.dart';
 import 'spaces_screen.dart';
 import '../constants/app_colors.dart';
+import '../providers/finance_provider.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -21,6 +23,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   ];
 
   void _onItemTapped(int index) {
+    // Reset space context when switching away from Spaces tab
+    if (_selectedIndex == 1 && index != 1) {
+      final financeProvider = context.read<FinanceProvider>();
+      financeProvider.setCurrentSpace(null);
+    }
+
     setState(() {
       _selectedIndex = index;
     });

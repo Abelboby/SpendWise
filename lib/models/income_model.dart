@@ -5,18 +5,20 @@ class IncomeModel {
   final double amount;
   final String description;
   final DateTime dateTime;
-  final String userId;
   final String? notes;
   final String? category;
+  final String? spaceId;
+  final String? createdBy;
 
-  IncomeModel({
+  const IncomeModel({
     required this.id,
     required this.amount,
     required this.description,
     required this.dateTime,
-    required this.userId,
     this.notes,
     this.category,
+    this.spaceId,
+    this.createdBy,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,9 +27,10 @@ class IncomeModel {
       'amount': amount,
       'description': description,
       'dateTime': Timestamp.fromDate(dateTime),
-      'userId': userId,
       'notes': notes,
       'category': category,
+      'spaceId': spaceId,
+      'createdBy': createdBy,
     };
   }
 
@@ -37,9 +40,32 @@ class IncomeModel {
       amount: (map['amount'] as num).toDouble(),
       description: map['description'] as String,
       dateTime: (map['dateTime'] as Timestamp).toDate(),
-      userId: map['userId'] as String,
       notes: map['notes'] as String?,
       category: map['category'] as String?,
+      spaceId: map['spaceId'] as String?,
+      createdBy: map['createdBy'] as String?,
+    );
+  }
+
+  IncomeModel copyWith({
+    String? id,
+    double? amount,
+    String? description,
+    DateTime? dateTime,
+    String? notes,
+    String? category,
+    String? spaceId,
+    String? createdBy,
+  }) {
+    return IncomeModel(
+      id: id ?? this.id,
+      amount: amount ?? this.amount,
+      description: description ?? this.description,
+      dateTime: dateTime ?? this.dateTime,
+      notes: notes ?? this.notes,
+      category: category ?? this.category,
+      spaceId: spaceId ?? this.spaceId,
+      createdBy: createdBy ?? this.createdBy,
     );
   }
 }
