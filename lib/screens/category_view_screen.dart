@@ -35,9 +35,12 @@ class CategoryViewScreen extends StatelessWidget {
     final isFakeMode = appState.isFakeMode;
     final theme = Theme.of(context);
     final categories = categoryProvider.categories;
+    final primaryColor = isFakeMode ? AppColors.darkGrey : AppColors.navy;
 
     return Scaffold(
+      backgroundColor: AppColors.lightGrey,
       appBar: AppBar(
+        elevation: 0,
         title: GestureDetector(
           onDoubleTap: () {
             appState.toggleFakeMode();
@@ -45,12 +48,10 @@ class CategoryViewScreen extends StatelessWidget {
               SnackBar(
                 content: Text(
                   isFakeMode ? 'Showing real expenses' : 'Showing fake expenses',
-                  style: TextStyle(
-                    color: isFakeMode ? AppColors.orange : AppColors.navy,
-                  ),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 duration: const Duration(seconds: 1),
-                backgroundColor: isFakeMode ? AppColors.yellow : AppColors.purple,
+                backgroundColor: primaryColor,
               ),
             );
           },
@@ -58,12 +59,12 @@ class CategoryViewScreen extends StatelessWidget {
             isFakeMode ? 'Categories (Fake)' : 'Categories',
             style: theme.textTheme.titleLarge?.copyWith(
               color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
-        backgroundColor: isFakeMode ? AppColors.orange : AppColors.navy,
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -80,6 +81,7 @@ class CategoryViewScreen extends StatelessWidget {
       body: Stack(
         children: [
           ListView.builder(
+            padding: const EdgeInsets.all(16),
             itemCount: categories.length,
             itemBuilder: (context, index) {
               final category = categories[index];
@@ -95,133 +97,190 @@ class CategoryViewScreen extends StatelessWidget {
               );
 
               return Card(
-                margin: const EdgeInsets.all(8.0),
-                child: ExpansionTile(
-                  leading: Icon(
-                    category.icon,
-                    color: isFakeMode ? AppColors.orange : AppColors.navy,
+                margin: const EdgeInsets.only(bottom: 16),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                    color: primaryColor.withOpacity(0.1),
                   ),
-                  title: Text(
-                    category.name,
-                    style: theme.textTheme.titleLarge,
+                ),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    dividerColor: Colors.transparent,
                   ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ExpansionTile(
+                    leading: Icon(
+                      category.icon,
+                      color: AppColors.accent,
+                      size: 24,
+                    ),
+                    iconColor: AppColors.accent,
+                    collapsedIconColor: AppColors.accent,
+                    title: Text(
+                      category.name,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Income: ₹${totalIncome.toStringAsFixed(2)}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          'Total Expenses: ₹${totalExpenses.toStringAsFixed(2)}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          'Remaining: ₹${remainingAmount.toStringAsFixed(2)}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: remainingAmount < 0 ? Colors.red[700] : AppColors.accent,
+                          ),
+                        ),
+                      ],
+                    ),
                     children: [
-                      Text(
-                        'Total Income: ₹$totalIncome',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      Text(
-                        'Total Expenses: ₹$totalExpenses',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      Text(
-                        'Remaining: ₹$remainingAmount',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: remainingAmount < 0
-                              ? Colors.red
-                              : isFakeMode
-                                  ? AppColors.orange
-                                  : AppColors.navy,
+                      ...incomes.map((income) {
+                        final expenses = expenseProvider.getExpensesForIncome(
+                          income.id,
+                          isFake: isFakeMode,
+                        );
+                        return Card(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: primaryColor.withOpacity(0.1),
+                            ),
+                          ),
+                          child: ExpansionTile(
+                            title: Text(
+                              'Income: ₹${income.amount.toStringAsFixed(2)}',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: AppColors.accent,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  income.description,
+                                  style: TextStyle(color: Colors.grey[700]),
+                                ),
+                                Text(
+                                  _formatDateTime(income.date),
+                                  style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            children: [
+                              ...expenses.map(
+                                (expense) => ListTile(
+                                  title: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '₹${expense.amount.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          color: Colors.red[700],
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        _formatDateTime(expense.date),
+                                        style: TextStyle(
+                                          color: Colors.grey[500],
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  subtitle: Text(
+                                    expense.description,
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => AddExpenseDialog(
+                                        incomeId: income.id,
+                                        remainingAmount: income.remainingAmount,
+                                        isFakeMode: isFakeMode,
+                                        categoryId: category.id,
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.accent,
+                                    foregroundColor: Colors.white,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                  ),
+                                  icon: const Icon(Icons.add, size: 20),
+                                  label: const Text('Add Expense'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => AddIncomeDialog(
+                                categoryId: category.id,
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.accent,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          icon: const Icon(Icons.add, size: 20),
+                          label: const Text('Add Income'),
                         ),
                       ),
                     ],
                   ),
-                  children: [
-                    ...incomes.map((income) {
-                      final expenses = expenseProvider.getExpensesForIncome(
-                        income.id,
-                        isFake: isFakeMode,
-                      );
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
-                        ),
-                        child: ExpansionTile(
-                          title: Text(
-                            'Income: ₹${income.amount}',
-                            style: theme.textTheme.titleMedium,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(income.description),
-                              Text(
-                                _formatDateTime(income.date),
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                          children: [
-                            ...expenses.map(
-                              (expense) => ListTile(
-                                title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '₹${expense.amount}',
-                                      style: theme.textTheme.bodyLarge,
-                                    ),
-                                    Text(
-                                      _formatDateTime(expense.date),
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        color: isFakeMode
-                                            ? AppColors.orange.withOpacity(0.7)
-                                            : AppColors.navy.withOpacity(0.7),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                subtitle: Text(expense.description),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) => AddExpenseDialog(
-                                      incomeId: income.id,
-                                      remainingAmount: income.remainingAmount,
-                                      isFakeMode: isFakeMode,
-                                      categoryId: category.id,
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: isFakeMode ? AppColors.orange : AppColors.navy,
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: const Text('Add Expense'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AddIncomeDialog(
-                              categoryId: category.id,
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isFakeMode ? AppColors.orange : AppColors.navy,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: const Text('Add Income'),
-                      ),
-                    ),
-                  ],
                 ),
               );
             },
@@ -233,30 +292,23 @@ class CategoryViewScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.orange,
+                  color: AppColors.accent.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.warning_rounded,
-                      color: AppColors.yellow,
+                      color: AppColors.accent,
                       size: 18,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'FAKE MODE',
                       style: TextStyle(
-                        color: AppColors.yellow,
-                        fontWeight: FontWeight.bold,
+                        color: AppColors.accent,
+                        fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
                     ),

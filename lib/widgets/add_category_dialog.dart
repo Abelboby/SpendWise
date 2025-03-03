@@ -55,12 +55,15 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isFakeMode = context.watch<AppStateProvider>().isFakeMode;
-    final primaryColor = isFakeMode ? AppColors.orange : AppColors.navy;
+    final primaryColor = isFakeMode ? AppColors.darkGrey : AppColors.navy;
 
     return AlertDialog(
       title: Text(
         'Add New Category',
-        style: theme.textTheme.titleLarge?.copyWith(color: primaryColor),
+        style: theme.textTheme.titleLarge?.copyWith(
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       content: Form(
         key: _formKey,
@@ -74,9 +77,19 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                 labelStyle: TextStyle(color: primaryColor),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[700]!),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               style: TextStyle(color: primaryColor),
@@ -90,16 +103,19 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
             const SizedBox(height: 16),
             Text(
               'Select Icon',
-              style: TextStyle(color: primaryColor),
+              style: TextStyle(
+                color: primaryColor,
+                fontSize: 16,
+              ),
             ),
             const SizedBox(height: 8),
             Container(
               height: 200,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: primaryColor.withOpacity(0.5),
+                  color: primaryColor.withOpacity(0.2),
                 ),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: GridView.builder(
                 padding: const EdgeInsets.all(8),
@@ -120,15 +136,16 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected ? primaryColor.withOpacity(0.1) : Colors.transparent,
+                        color: isSelected ? AppColors.accent.withOpacity(0.1) : Colors.transparent,
                         border: Border.all(
-                          color: isSelected ? primaryColor : primaryColor.withOpacity(0.3),
+                          color: isSelected ? AppColors.accent : primaryColor.withOpacity(0.2),
                         ),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
                         icon,
-                        color: primaryColor,
+                        color: isSelected ? AppColors.accent : primaryColor,
+                        size: 24,
                       ),
                     ),
                   );
@@ -149,8 +166,16 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
         ElevatedButton(
           onPressed: _submitForm,
           style: ElevatedButton.styleFrom(
-            backgroundColor: primaryColor,
+            backgroundColor: AppColors.accent,
             foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
           ),
           child: const Text('Add'),
         ),

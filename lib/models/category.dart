@@ -6,7 +6,7 @@ class Category {
   final IconData icon;
   final bool isDefault;
 
-  Category({
+  const Category({
     required this.id,
     required this.name,
     required this.icon,
@@ -28,12 +28,15 @@ class Category {
     return Category(
       id: json['id'],
       name: json['name'],
-      icon: IconData(
-        json['iconCodePoint'],
-        fontFamily: json['iconFontFamily'],
-        fontPackage: json['iconFontPackage'],
-      ),
+      icon:
+          _getIconData(json['iconCodePoint'], fontFamily: json['iconFontFamily'], fontPackage: json['iconFontPackage']),
       isDefault: json['isDefault'] ?? false,
     );
+  }
+
+  // Helper method to get constant IconData
+  static IconData _getIconData(int codePoint, {String? fontFamily, String? fontPackage}) {
+    // Create a const IconData
+    return IconData(codePoint, fontFamily: fontFamily, fontPackage: fontPackage, matchTextDirection: false);
   }
 }

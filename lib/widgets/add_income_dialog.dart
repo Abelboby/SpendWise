@@ -49,7 +49,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: isFakeMode ? AppColors.orange : AppColors.navy,
+              primary: isFakeMode ? AppColors.darkGrey : AppColors.navy,
               onPrimary: Colors.white,
             ),
           ),
@@ -67,7 +67,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
           return Theme(
             data: Theme.of(context).copyWith(
               colorScheme: ColorScheme.light(
-                primary: isFakeMode ? AppColors.orange : AppColors.navy,
+                primary: isFakeMode ? AppColors.darkGrey : AppColors.navy,
                 onPrimary: Colors.white,
               ),
             ),
@@ -106,13 +106,16 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isFakeMode = context.watch<AppStateProvider>().isFakeMode;
-    final primaryColor = isFakeMode ? AppColors.orange : AppColors.navy;
+    final primaryColor = isFakeMode ? AppColors.darkGrey : AppColors.navy;
     final categories = context.watch<CategoryProvider>().categories;
 
     return AlertDialog(
       title: Text(
         'Add New Income',
-        style: theme.textTheme.titleLarge?.copyWith(color: primaryColor),
+        style: theme.textTheme.titleLarge?.copyWith(
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       content: Form(
         key: _formKey,
@@ -127,9 +130,19 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                   labelStyle: TextStyle(color: primaryColor),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: primaryColor),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                    borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red[300]!),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red[700]!),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 style: TextStyle(color: primaryColor),
@@ -138,7 +151,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                     value: category.id,
                     child: Row(
                       children: [
-                        Icon(category.icon, color: primaryColor, size: 20),
+                        Icon(category.icon, color: AppColors.accent, size: 20),
                         const SizedBox(width: 8),
                         Text(category.name),
                       ],
@@ -168,9 +181,19 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                 prefixStyle: TextStyle(color: primaryColor),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[700]!),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               keyboardType: TextInputType.number,
@@ -196,9 +219,19 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                 labelStyle: TextStyle(color: primaryColor),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[700]!),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               style: TextStyle(color: primaryColor),
@@ -216,9 +249,9 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: primaryColor.withOpacity(0.5),
+                    color: primaryColor.withOpacity(0.2),
                   ),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -250,8 +283,16 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
         ElevatedButton(
           onPressed: _submitForm,
           style: ElevatedButton.styleFrom(
-            backgroundColor: primaryColor,
+            backgroundColor: AppColors.accent,
             foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
           ),
           child: const Text('Add'),
         ),

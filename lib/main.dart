@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'providers/expense_provider.dart';
+import 'providers/auth_provider.dart';
 import 'providers/app_state_provider.dart';
 import 'providers/category_provider.dart';
-import 'screens/home_screen.dart';
-import 'constants/app_colors.dart';
+import 'providers/expense_provider.dart';
+import 'screens/splash_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -17,34 +20,40 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ExpenseProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => AppStateProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => ExpenseProvider()),
       ],
-      child: Consumer<AppStateProvider>(
-        builder: (context, appState, _) {
-          return MaterialApp(
-            title: 'Expense Tracker',
-            theme: ThemeData(
-              colorScheme: appState.isFakeMode ? AppColors.fakeTheme : AppColors.realTheme,
-              useMaterial3: true,
-              cardTheme: CardTheme(
-                color: appState.isFakeMode ? AppColors.fakeCardColor : AppColors.realCardColor,
-                elevation: 2,
-              ),
-              textTheme: TextTheme(
-                titleLarge: TextStyle(
-                  color: appState.isFakeMode ? AppColors.fakeTextColor : AppColors.realTextColor,
-                  fontWeight: FontWeight.bold,
-                ),
-                bodyLarge: TextStyle(
-                  color: appState.isFakeMode ? AppColors.fakeTextColor : AppColors.realTextColor,
-                ),
+      child: MaterialApp(
+        title: 'Chit Tracker',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            primary: Colors.blue,
+            secondary: Colors.orange,
+          ),
+          useMaterial3: true,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+          cardTheme: CardTheme(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: Colors.grey.withOpacity(0.2),
               ),
             ),
-            home: const HomeScreen(),
-          );
-        },
+          ),
+        ),
+        home: const SplashScreen(),
       ),
     );
   }

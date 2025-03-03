@@ -45,7 +45,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: widget.isFakeMode ? AppColors.orange : AppColors.navy,
+              primary: widget.isFakeMode ? AppColors.darkGrey : AppColors.navy,
               onPrimary: Colors.white,
             ),
           ),
@@ -62,7 +62,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
           return Theme(
             data: Theme.of(context).copyWith(
               colorScheme: ColorScheme.light(
-                primary: widget.isFakeMode ? AppColors.orange : AppColors.navy,
+                primary: widget.isFakeMode ? AppColors.darkGrey : AppColors.navy,
                 onPrimary: Colors.white,
               ),
             ),
@@ -106,12 +106,15 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryColor = widget.isFakeMode ? AppColors.orange : AppColors.navy;
+    final primaryColor = widget.isFakeMode ? AppColors.darkGrey : AppColors.navy;
 
     return AlertDialog(
       title: Text(
         widget.isFakeMode ? 'Add New Fake Expense' : 'Add New Expense',
-        style: theme.textTheme.titleLarge?.copyWith(color: primaryColor),
+        style: theme.textTheme.titleLarge?.copyWith(
+          color: primaryColor,
+          fontWeight: FontWeight.w600,
+        ),
       ),
       content: Form(
         key: _formKey,
@@ -119,10 +122,10 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Remaining Amount: ₹${widget.remainingAmount}',
+              'Remaining Amount: ₹${widget.remainingAmount.toStringAsFixed(2)}',
               style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: primaryColor,
+                fontWeight: FontWeight.w600,
+                color: AppColors.accent,
               ),
             ),
             const SizedBox(height: 16),
@@ -135,9 +138,19 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                 prefixStyle: TextStyle(color: primaryColor),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[700]!),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               keyboardType: TextInputType.number,
@@ -167,9 +180,19 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                 labelStyle: TextStyle(color: primaryColor),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.5)),
+                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[300]!),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red[700]!),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               style: TextStyle(color: primaryColor),
@@ -187,9 +210,9 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: primaryColor.withOpacity(0.5),
+                    color: primaryColor.withOpacity(0.2),
                   ),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,8 +244,16 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
         ElevatedButton(
           onPressed: _submitForm,
           style: ElevatedButton.styleFrom(
-            backgroundColor: primaryColor,
+            backgroundColor: AppColors.accent,
             foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
           ),
           child: Text(widget.isFakeMode ? 'Add Fake' : 'Add'),
         ),
