@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 import '../providers/auth_provider.dart';
+import '../providers/finance_provider.dart';
 import '../constants/app_colors.dart';
 import 'settings_screen.dart';
+import 'analytics_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -397,6 +400,20 @@ class ProfileScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                _buildProfileOption(
+                  context: context,
+                  icon: Icons.analytics_outlined,
+                  title: 'Analytics',
+                  subtitle: 'View detailed financial insights',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AnalyticsScreen(),
+                      ),
+                    );
+                  },
+                ),
                 _buildProfileOption(
                   context: context,
                   icon: Icons.settings_outlined,
