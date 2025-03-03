@@ -5,6 +5,7 @@ import 'providers/auth_provider.dart';
 import 'providers/app_state_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
+import 'providers/finance_provider.dart';
 import 'screens/splash_screen.dart';
 
 Future<void> main() async {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AppStateProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => ExpenseProvider()),
+        ChangeNotifierProvider(create: (_) => FinanceProvider()),
       ],
       child: MaterialApp(
         title: 'Chit Tracker',

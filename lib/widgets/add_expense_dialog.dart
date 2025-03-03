@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/expense_provider.dart';
-import '../constants/app_colors.dart';
 import 'package:intl/intl.dart';
+import '../providers/finance_provider.dart';
 
 class AddExpenseDialog extends StatefulWidget {
   final String incomeId;
-  final double remainingAmount;
-  final bool isFakeMode;
-  final String categoryId;
 
   const AddExpenseDialog({
     super.key,
     required this.incomeId,
-    required this.remainingAmount,
-    required this.isFakeMode,
-    required this.categoryId,
   });
 
   @override
@@ -24,14 +17,16 @@ class AddExpenseDialog extends StatefulWidget {
 
 class _AddExpenseDialogState extends State<AddExpenseDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _notesController = TextEditingController();
   DateTime _selectedDateTime = DateTime.now();
 
   @override
   void dispose() {
-    _amountController.dispose();
     _descriptionController.dispose();
+    _amountController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -40,35 +35,13 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
       context: context,
       initialDate: _selectedDateTime,
       firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: widget.isFakeMode ? AppColors.darkGrey : AppColors.navy,
-              onPrimary: Colors.white,
-            ),
-          ),
-          child: child!,
-        );
-      },
+      lastDate: DateTime.now().add(const Duration(days: 365)),
     );
 
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
-        builder: (context, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: widget.isFakeMode ? AppColors.darkGrey : AppColors.navy,
-                onPrimary: Colors.white,
-              ),
-            ),
-            child: child!,
-          );
-        },
       );
 
       if (pickedTime != null) {
@@ -87,16 +60,14 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      final amount = double.parse(_amountController.text);
-      final description = _descriptionController.text;
+      final financeProvider = context.read<FinanceProvider>();
 
-      Provider.of<ExpenseProvider>(context, listen: false).addExpense(
-        widget.incomeId,
-        amount,
-        description,
-        _selectedDateTime,
-        widget.categoryId,
-        isFake: widget.isFakeMode,
+      financeProvider.addExpense(
+        incomeId: widget.incomeId,
+        amount: double.parse(_amountController.text),
+        description: _descriptionController.text,
+        dateTime: _selectedDateTime,
+        notes: _notesController.text.isNotEmpty ? _notesController.text : null,
       );
 
       Navigator.of(context).pop();
@@ -105,159 +76,107 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primaryColor = widget.isFakeMode ? AppColors.darkGrey : AppColors.navy;
-
-    return AlertDialog(
-      title: Text(
-        widget.isFakeMode ? 'Add New Fake Expense' : 'Add New Expense',
-        style: theme.textTheme.titleLarge?.copyWith(
-          color: primaryColor,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Remaining Amount: ₹${widget.remainingAmount.toStringAsFixed(2)}',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppColors.accent,
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _amountController,
-              decoration: InputDecoration(
-                labelText: 'Amount',
-                prefixText: '₹',
-                labelStyle: TextStyle(color: primaryColor),
-                prefixStyle: TextStyle(color: primaryColor),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor),
-                  borderRadius: BorderRadius.circular(8),
+    return Dialog(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Add Expense',
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red[700]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-              style: TextStyle(color: primaryColor),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter an amount';
-                }
-                final amount = double.tryParse(value);
-                if (amount == null) {
-                  return 'Please enter a valid number';
-                }
-                if (amount <= 0) {
-                  return 'Amount must be greater than 0';
-                }
-                if (amount > widget.remainingAmount) {
-                  return 'Amount cannot be greater than remaining amount';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description',
-                labelStyle: TextStyle(color: primaryColor),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red[700]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              style: TextStyle(color: primaryColor),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a description';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: _selectDateTime,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: primaryColor.withOpacity(0.2),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    hintText: 'Enter expense description',
                   ),
-                  borderRadius: BorderRadius.circular(8),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      DateFormat('MMM dd, yyyy hh:mm a').format(_selectedDateTime),
-                      style: TextStyle(color: primaryColor),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _amountController,
+                  decoration: const InputDecoration(
+                    labelText: 'Amount',
+                    hintText: 'Enter amount',
+                    prefixText: 'Rs. ',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an amount';
+                    }
+                    final amount = double.tryParse(value);
+                    if (amount == null) {
+                      return 'Please enter a valid number';
+                    }
+                    if (amount <= 0) {
+                      return 'Amount must be greater than 0';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                InkWell(
+                  onTap: _selectDateTime,
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Date & Time',
+                      hintText: 'Select date and time',
                     ),
-                    Icon(
-                      Icons.calendar_today,
-                      color: primaryColor,
-                      size: 20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          DateFormat('MMM dd, yyyy hh:mm a')
+                              .format(_selectedDateTime),
+                        ),
+                        const Icon(Icons.calendar_today, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _notesController,
+                  decoration: const InputDecoration(
+                    labelText: 'Notes (Optional)',
+                    hintText: 'Enter additional notes',
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      child: const Text('Add Expense'),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          style: TextButton.styleFrom(
-            foregroundColor: primaryColor,
-          ),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _submitForm,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.accent,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 12,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-          ),
-          child: Text(widget.isFakeMode ? 'Add Fake' : 'Add'),
-        ),
-      ],
     );
   }
 }
