@@ -7,6 +7,8 @@ import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/finance_provider.dart';
 import 'screens/splash_screen.dart';
+import 'screens/main_navigation_screen.dart';
+import 'screens/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => FinanceProvider()),
       ],
       child: MaterialApp(
-        title: 'Chit Tracker',
+        title: 'Income Tracker',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
@@ -55,7 +57,21 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const SplashScreen(),
+        home: Consumer<AuthProvider>(
+          builder: (context, authProvider, _) {
+            if (authProvider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (authProvider.isAuthenticated) {
+              // Initialize finance provider with user ID
+              final financeProvider =
+                  Provider.of<FinanceProvider>(context, listen: false);
+              financeProvider.initialize(authProvider.uid);
+              return const MainNavigationScreen();
+            }
+            return const LoginScreen();
+          },
+        ),
       ),
     );
   }

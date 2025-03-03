@@ -12,6 +12,16 @@ class FinanceProvider with ChangeNotifier {
   List<IncomeModel> get incomes => _incomes;
   Map<String, List<ExpenseModel>> get expensesByIncome => _expensesByIncome;
 
+  double get totalIncome {
+    return _incomes.fold(0, (sum, income) => sum + income.amount);
+  }
+
+  double get totalExpenses {
+    return _expensesByIncome.values
+        .expand((expenses) => expenses)
+        .fold(0, (sum, expense) => sum + expense.amount);
+  }
+
   void initialize(String userId) {
     _userId = userId;
     _listenToIncomes();

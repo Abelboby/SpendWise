@@ -27,6 +27,7 @@ class AuthProvider extends ChangeNotifier {
   String get userEmail => _user?.email ?? '';
   String? get userPhotoUrl => _userPhotoUrl;
   String get uid => _user?.uid ?? '';
+  String? get email => _user?.email;
 
   Future<void> _initializeAuth() async {
     try {
