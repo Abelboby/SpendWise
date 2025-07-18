@@ -7,7 +7,6 @@ import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/finance_provider.dart';
 import 'providers/space_provider.dart';
-import 'screens/splash_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'screens/login_screen.dart';
 import 'constants/app_colors.dart';
@@ -72,7 +71,7 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(
-                color: AppColors.navy.withOpacity(0.1),
+                color: AppColors.navy.withAlpha(25),
               ),
             ),
           ),
@@ -100,13 +99,13 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          appBarTheme: AppBarTheme(
-            titleTextStyle: const TextStyle(
+          appBarTheme: const AppBarTheme(
+            titleTextStyle: TextStyle(
               fontFamily: 'Manrope',
               fontWeight: FontWeight.w600,
               fontSize: 20,
             ),
-            toolbarTextStyle: const TextStyle(
+            toolbarTextStyle: TextStyle(
               fontFamily: 'Manrope',
               fontWeight: FontWeight.w500,
             ),
@@ -121,7 +120,7 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          snackBarTheme: SnackBarThemeData(
+          snackBarTheme: const SnackBarThemeData(
             contentTextStyle: TextStyle(
               fontFamily: 'Manrope',
               fontWeight: FontWeight.w500,
@@ -137,16 +136,13 @@ class MyApp extends StatelessWidget {
             if (authProvider.isAuthenticated) {
               // Initialize providers with user ID
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                final financeProvider =
-                    Provider.of<FinanceProvider>(context, listen: false);
+                final financeProvider = Provider.of<FinanceProvider>(context, listen: false);
                 financeProvider.initialize(authProvider.uid);
 
-                final spaceProvider =
-                    Provider.of<SpaceProvider>(context, listen: false);
+                final spaceProvider = Provider.of<SpaceProvider>(context, listen: false);
                 spaceProvider.initialize(authProvider.uid);
 
-                final categoryProvider =
-                    Provider.of<CategoryProvider>(context, listen: false);
+                final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
                 categoryProvider.initialize(authProvider.uid);
               });
 

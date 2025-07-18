@@ -1,0 +1,54 @@
+name: Flutter Android Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Get latest tag and bump
+        id: bump_tag
+        shell: bash
+        run: |
+          git fetch --tags
+          latestTag=$(git tag --list "v1.0.0*" | sort -V | tail -n 1)
+          if [[ -n "$latestTag" ]]; then
+            IFS='.' read -r major minor patch <<< "${latestTag#v}"
+            patch=$((patch + 1))
+          else
+            major=1; minor=0; patch=0
+          fi
+          newTag="v$major.$minor.$patch"
+          echo "NEW_TAG=$newTag" >> $GITHUB_ENV
+          git tag $newTag
+          git push origin $newTag
+
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/SpendWise-${{ env.NEW_TAG }}.apk
+
+      - name: Create Release and Upload APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.NEW_TAG }}
+          name: Release ${{ env.NEW_TAG }}
+          body: "Automated Android release for ${{ env.NEW_TAG }}\nCommit: ${{ github.sha }}"
+          files: build/app/outputs/flutter-apk/SpendWise-${{ env.NEW_TAG }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

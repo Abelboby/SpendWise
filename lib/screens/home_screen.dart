@@ -96,14 +96,14 @@ class HomeScreen extends StatelessWidget {
                 AppIcons.wallet,
                 width: 24,
                 height: 24,
-                colorFilter: ColorFilter.mode(
+                colorFilter: const ColorFilter.mode(
                   AppColors.lightGrey,
                   BlendMode.srcIn,
                 ),
               ),
             ),
             const SizedBox(width: 12),
-            Text(
+            const Text(
               'Personal Incomes',
               style: TextStyle(
                 color: Colors.white,

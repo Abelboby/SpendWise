@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/finance_provider.dart';
 import '../providers/category_provider.dart';
 import '../constants/app_colors.dart';
-import '../constants/app_icons.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
@@ -67,8 +65,7 @@ class AnalyticsScreen extends StatelessWidget {
     final totalIncome = financeProvider.totalIncome;
     final totalExpenses = financeProvider.totalExpenses;
     final remainingAmount = totalIncome - totalExpenses;
-    final spendingPercentage =
-        totalIncome > 0 ? (totalExpenses / totalIncome * 100) : 0;
+    final spendingPercentage = totalIncome > 0 ? (totalExpenses / totalIncome * 100) : 0;
 
     return _buildAnalyticCard(
       context: context,
@@ -168,21 +165,16 @@ class AnalyticsScreen extends StatelessWidget {
       icon: Icons.category_outlined,
       child: Column(
         children: categories.map((category) {
-          final incomes = financeProvider.incomes
-              .where((income) => income.category == category.id)
-              .toList();
-          final totalIncome =
-              incomes.fold(0.0, (sum, income) => sum + income.amount);
+          final incomes = financeProvider.incomes.where((income) => income.category == category.id).toList();
+          final totalIncome = incomes.fold(0.0, (sum, income) => sum + income.amount);
 
           final expenses = financeProvider.expensesByIncome.values
               .expand((expenses) => expenses)
               .where((expense) => expense.category == category.id)
               .toList();
-          final totalExpenses =
-              expenses.fold(0.0, (sum, expense) => sum + expense.amount);
+          final totalExpenses = expenses.fold(0.0, (sum, expense) => sum + expense.amount);
 
-          final percentage =
-              totalIncome > 0 ? (totalExpenses / totalIncome * 100) : 0;
+          final percentage = totalIncome > 0 ? (totalExpenses / totalIncome * 100) : 0;
 
           return Column(
             children: [
@@ -254,15 +246,13 @@ class AnalyticsScreen extends StatelessWidget {
                                   strokeWidth: 8,
                                 ),
                               ),
-                              if (category.iconCodePoint != null)
-                                Center(
-                                  child: Icon(
-                                    IconData(category.iconCodePoint!,
-                                        fontFamily: category.iconFontFamily),
-                                    size: 24,
-                                    color: AppColors.navy,
-                                  ),
+                              const Center(
+                                child: Icon(
+                                  Icons.category,
+                                  size: 24,
+                                  color: AppColors.navy,
                                 ),
+                              ),
                             ],
                           ),
                         ),

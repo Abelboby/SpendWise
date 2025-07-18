@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import '../constants/app_colors.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   final Function onSuccess;
@@ -17,8 +16,7 @@ class GoogleSignInButton extends StatefulWidget {
   State<GoogleSignInButton> createState() => _GoogleSignInButtonState();
 }
 
-class _GoogleSignInButtonState extends State<GoogleSignInButton>
-    with SingleTickerProviderStateMixin {
+class _GoogleSignInButtonState extends State<GoogleSignInButton> with SingleTickerProviderStateMixin {
   bool _isLoading = false;
   late AnimationController _buttonAnimationController;
   late Animation<double> _buttonScaleAnimation;
@@ -164,7 +162,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.white.withOpacity(0.9),
+                          Colors.white.withAlpha(230),
                         ),
                       ),
                     ),
