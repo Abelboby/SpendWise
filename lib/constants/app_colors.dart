@@ -13,8 +13,7 @@ class AppColors {
     primary: navy,
     secondary: accent,
     tertiary: darkGrey,
-    background: lightGrey,
-    surface: Colors.white,
+    surface: lightGrey,
   );
 
   static final fakeTheme = ColorScheme.fromSeed(
@@ -22,13 +21,12 @@ class AppColors {
     primary: darkGrey,
     secondary: accent,
     tertiary: navy,
-    background: lightGrey,
-    surface: Colors.white,
+    surface: lightGrey,
   );
 
   // Card colors
-  static final realCardColor = navy.withOpacity(0.05);
-  static final fakeCardColor = darkGrey.withOpacity(0.05);
+  static final realCardColor = navy.withAlpha(13);
+  static final fakeCardColor = darkGrey.withAlpha(13);
 
   // Text colors
   static const realTextColor = navy;

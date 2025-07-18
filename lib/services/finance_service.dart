@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import '../models/income_model.dart';
 import '../models/expense_model.dart';
-import '../models/space_model.dart';
 import 'package:flutter/foundation.dart';
 
 class FinanceService {
@@ -15,10 +14,7 @@ class FinanceService {
   // Get incomes stream
   Stream<List<IncomeModel>> getIncomes(String userId, {String? spaceId}) {
     final incomesRef = spaceId != null
-        ? _firestore
-            .collection(_spacesCollection)
-            .doc(spaceId)
-            .collection(_incomesCollection)
+        ? _firestore.collection(_spacesCollection).doc(spaceId).collection(_incomesCollection)
         : _firestore
             .collection(_usersCollection)
             .doc(userId)
@@ -26,9 +22,7 @@ class FinanceService {
             .where('spaceId', isNull: true); // Only get personal incomes
 
     return incomesRef.snapshots().map((snapshot) {
-      return snapshot.docs
-          .map((doc) => IncomeModel.fromMap(doc.data()))
-          .toList();
+      return snapshot.docs.map((doc) => IncomeModel.fromMap(doc.data())).toList();
     });
   }
 
@@ -53,9 +47,7 @@ class FinanceService {
             .collection(_expensesCollection);
 
     return expensesRef.snapshots().map((snapshot) {
-      return snapshot.docs
-          .map((doc) => ExpenseModel.fromMap(doc.data()))
-          .toList();
+      return snapshot.docs.map((doc) => ExpenseModel.fromMap(doc.data())).toList();
     });
   }
 
@@ -82,16 +74,8 @@ class FinanceService {
     );
 
     final incomeRef = spaceId != null
-        ? _firestore
-            .collection(_spacesCollection)
-            .doc(spaceId)
-            .collection(_incomesCollection)
-            .doc(income.id)
-        : _firestore
-            .collection(_usersCollection)
-            .doc(userId)
-            .collection(_incomesCollection)
-            .doc(income.id);
+        ? _firestore.collection(_spacesCollection).doc(spaceId).collection(_incomesCollection).doc(income.id)
+        : _firestore.collection(_usersCollection).doc(userId).collection(_incomesCollection).doc(income.id);
 
     await incomeRef.set(income.toMap());
   }
@@ -123,23 +107,13 @@ class FinanceService {
   }
 
   // Delete an income
-  Future<void> deleteIncome(String userId, String incomeId,
-      {String? spaceId}) async {
+  Future<void> deleteIncome(String userId, String incomeId, {String? spaceId}) async {
     final incomeRef = spaceId != null
-        ? _firestore
-            .collection(_spacesCollection)
-            .doc(spaceId)
-            .collection(_incomesCollection)
-            .doc(incomeId)
-        : _firestore
-            .collection(_usersCollection)
-            .doc(userId)
-            .collection(_incomesCollection)
-            .doc(incomeId);
+        ? _firestore.collection(_spacesCollection).doc(spaceId).collection(_incomesCollection).doc(incomeId)
+        : _firestore.collection(_usersCollection).doc(userId).collection(_incomesCollection).doc(incomeId);
 
     // Delete all expenses for this income first
-    final expensesSnapshot =
-        await incomeRef.collection(_expensesCollection).get();
+    final expensesSnapshot = await incomeRef.collection(_expensesCollection).get();
 
     final batch = _firestore.batch();
     for (var doc in expensesSnapshot.docs) {
@@ -150,19 +124,10 @@ class FinanceService {
   }
 
   // Delete an expense
-  Future<void> deleteExpense(String userId, String expenseId,
-      {String? spaceId}) async {
+  Future<void> deleteExpense(String userId, String expenseId, {String? spaceId}) async {
     final expenseRef = spaceId != null
-        ? _firestore
-            .collection(_spacesCollection)
-            .doc(spaceId)
-            .collection(_expensesCollection)
-            .doc(expenseId)
-        : _firestore
-            .collection(_usersCollection)
-            .doc(userId)
-            .collection(_expensesCollection)
-            .doc(expenseId);
+        ? _firestore.collection(_spacesCollection).doc(spaceId).collection(_expensesCollection).doc(expenseId)
+        : _firestore.collection(_usersCollection).doc(userId).collection(_expensesCollection).doc(expenseId);
 
     await expenseRef.delete();
   }

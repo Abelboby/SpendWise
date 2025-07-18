@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../models/income_model.dart';
-import '../models/expense_model.dart';
 import '../models/category_model.dart';
 import '../providers/finance_provider.dart';
 import '../providers/category_provider.dart';
 import '../widgets/add_expense_dialog.dart';
 import '../constants/app_colors.dart';
-import '../models/space_model.dart';
 import '../providers/space_provider.dart';
 
 class IncomeDetailsScreen extends StatelessWidget {
@@ -27,11 +25,11 @@ class IncomeDetailsScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            title: Text(
+            title: const Text(
               'Delete Expense',
               style: TextStyle(color: AppColors.navy),
             ),
-            content: Text(
+            content: const Text(
               'Are you sure you want to delete this expense?',
               style: TextStyle(color: AppColors.darkGrey),
             ),
@@ -63,21 +61,16 @@ class IncomeDetailsScreen extends StatelessWidget {
     final categoryProvider = Provider.of<CategoryProvider>(context);
     final expenses = financeProvider.getExpensesForIncome(income.id);
     final totalExpenses = financeProvider.getTotalExpensesForIncome(income.id);
-    final remainingAmount =
-        financeProvider.getRemainingAmountForIncome(income.id);
+    final remainingAmount = financeProvider.getRemainingAmountForIncome(income.id);
 
     // Check if this income is part of a space
-    final space = income.spaceId != null
-        ? spaceProvider.spaces.firstWhere((s) => s.id == income.spaceId)
-        : null;
+    final space = income.spaceId != null ? spaceProvider.spaces.firstWhere((s) => s.id == income.spaceId) : null;
 
     // Only allow expense management if it's a personal income or user has proper permissions
-    final canManageExpenses =
-        space == null || financeProvider.canManageFinances(space);
+    final canManageExpenses = space == null || financeProvider.canManageFinances(space);
 
     // Get creator info if this is a space income
-    final creator =
-        space?.members.firstWhere((m) => m.userId == income.createdBy);
+    final creator = space?.members.firstWhere((m) => m.userId == income.createdBy);
 
     // Get category info if available
     final categoryName = income.category != null && categoryProvider.isEnabled
@@ -105,7 +98,7 @@ class IncomeDetailsScreen extends StatelessWidget {
         backgroundColor: AppColors.navy,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
+        title: const Text(
           'Income Details',
           style: TextStyle(color: AppColors.lightGrey),
         ),
@@ -115,7 +108,7 @@ class IncomeDetailsScreen extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24.0),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -148,8 +141,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                 ],
                 if (categoryName != null) ...[
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.accent.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
@@ -157,7 +149,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.category_outlined,
                           size: 16,
                           color: AppColors.lightGrey,
@@ -165,7 +157,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(
                           categoryName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.lightGrey,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -238,28 +230,24 @@ class IncomeDetailsScreen extends StatelessWidget {
                 final expense = expenses[index];
 
                 // Get expense category info if available
-                final expenseCategoryName =
-                    expense.category != null && categoryProvider.isEnabled
-                        ? categoryProvider.categories
-                            .firstWhere(
-                              (c) => c.id == expense.category,
-                              orElse: () => CategoryModel(
-                                id: '',
-                                name: 'Unknown',
-                                isDefault: false,
-                                createdAt: DateTime.now(),
-                              ),
-                            )
-                            .name
-                        : null;
+                final expenseCategoryName = expense.category != null && categoryProvider.isEnabled
+                    ? categoryProvider.categories
+                        .firstWhere(
+                          (c) => c.id == expense.category,
+                          orElse: () => CategoryModel(
+                            id: '',
+                            name: 'Unknown',
+                            isDefault: false,
+                            createdAt: DateTime.now(),
+                          ),
+                        )
+                        .name
+                    : null;
 
                 return Dismissible(
                   key: Key(expense.id),
-                  direction: canManageExpenses
-                      ? DismissDirection.endToStart
-                      : DismissDirection.none,
-                  confirmDismiss:
-                      canManageExpenses ? (_) => _confirmDelete(context) : null,
+                  direction: canManageExpenses ? DismissDirection.endToStart : DismissDirection.none,
+                  confirmDismiss: canManageExpenses ? (_) => _confirmDelete(context) : null,
                   onDismissed: (_) => financeProvider.deleteExpense(expense.id),
                   background: Container(
                     margin: const EdgeInsets.only(bottom: 16),
@@ -298,20 +286,16 @@ class IncomeDetailsScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       expense.description,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                             fontWeight: FontWeight.bold,
                                             color: AppColors.navy,
                                           ),
                                     ),
-                                    if (space != null &&
-                                        expense.createdBy != null) ...[
+                                    if (space != null && expense.createdBy != null) ...[
                                       const SizedBox(height: 4),
                                       Text(
                                         'Added by ${space.members.firstWhere((m) => m.userId == expense.createdBy).displayName}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: AppColors.darkGrey,
                                           fontSize: 12,
                                         ),
@@ -331,10 +315,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                                 ),
                                 child: Text(
                                   'Rs. ${expense.amount.toStringAsFixed(2)}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                         color: AppColors.accent,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -349,24 +330,22 @@ class IncomeDetailsScreen extends StatelessWidget {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.calendar_today_outlined,
                                     size: 16,
                                     color: AppColors.darkGrey,
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    DateFormat('MMM dd, yyyy')
-                                        .format(expense.dateTime),
-                                    style: TextStyle(color: AppColors.darkGrey),
+                                    DateFormat('MMM dd, yyyy').format(expense.dateTime),
+                                    style: const TextStyle(color: AppColors.darkGrey),
                                   ),
                                 ],
                               ),
                               if (expenseCategoryName != null) ...[
                                 const SizedBox(width: 12),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: AppColors.accent.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(12),
@@ -374,7 +353,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.category_outlined,
                                         size: 14,
                                         color: AppColors.darkGrey,
@@ -382,7 +361,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                                       const SizedBox(width: 4),
                                       Text(
                                         expenseCategoryName,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: AppColors.darkGrey,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
@@ -398,7 +377,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                             const SizedBox(height: 12),
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.notes_outlined,
                                   size: 16,
                                   color: AppColors.darkGrey,
@@ -407,7 +386,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     expense.notes!,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: AppColors.darkGrey,
                                       fontSize: 14,
                                       height: 1.4,

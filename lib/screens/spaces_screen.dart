@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/app_colors.dart';
-import '../models/space_model.dart';
 import '../providers/space_provider.dart';
 import '../widgets/create_space_dialog.dart';
 import 'space_details_screen.dart';
@@ -32,7 +31,7 @@ class SpacesScreen extends StatelessWidget {
                       color: AppColors.accent.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.group_add_outlined,
                       color: AppColors.accent,
                       size: 24,
@@ -54,18 +53,16 @@ class SpacesScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Invite Code',
                   hintText: 'Enter space invite code',
-                  labelStyle: TextStyle(color: AppColors.darkGrey),
+                  labelStyle: const TextStyle(color: AppColors.darkGrey),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.accent),
+                    borderSide: const BorderSide(color: AppColors.accent),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.darkGrey.withOpacity(0.3)),
+                    borderSide: BorderSide(color: AppColors.darkGrey.withOpacity(0.3)),
                   ),
-                  prefixIcon:
-                      Icon(Icons.key_outlined, color: AppColors.darkGrey),
+                  prefixIcon: const Icon(Icons.key_outlined, color: AppColors.darkGrey),
                 ),
               ),
               const SizedBox(height: 24),
@@ -76,8 +73,7 @@ class SpacesScreen extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.darkGrey,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     ),
                     child: const Text('Cancel'),
                   ),
@@ -90,8 +86,8 @@ class SpacesScreen extends StatelessWidget {
                         if (context.mounted) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Successfully joined space!'),
+                            const SnackBar(
+                              content: Text('Successfully joined space!'),
                               backgroundColor: AppColors.accent,
                             ),
                           );
@@ -100,8 +96,7 @@ class SpacesScreen extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content:
-                                  Text('Error joining space: ${e.toString()}'),
+                              content: Text('Error joining space: ${e.toString()}'),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -111,8 +106,7 @@ class SpacesScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.accent,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -171,14 +165,14 @@ class SpacesScreen extends StatelessWidget {
                 color: AppColors.lightGrey.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.group_work_outlined,
                 color: AppColors.lightGrey,
                 size: 24,
               ),
             ),
             const SizedBox(width: 12),
-            Text(
+            const Text(
               'My Spaces',
               style: TextStyle(
                 color: Colors.white,
@@ -207,9 +201,7 @@ class SpacesScreen extends StatelessWidget {
             child: Consumer<SpaceProvider>(
               builder: (context, spaceProvider, _) {
                 final totalSpaces = spaceProvider.spaces.length;
-                final ownedSpaces = spaceProvider.spaces
-                    .where((space) => space.isOwner(spaceProvider.userId))
-                    .length;
+                final ownedSpaces = spaceProvider.spaces.where((space) => space.isOwner(spaceProvider.userId)).length;
                 final joinedSpaces = totalSpaces - ownedSpaces;
 
                 return Row(
@@ -258,14 +250,13 @@ class SpacesScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         Text(
                           'No Spaces Yet',
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    color: AppColors.navy,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: AppColors.navy,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Create or join a space to get started',
                           style: TextStyle(color: AppColors.darkGrey),
                         ),
@@ -308,7 +299,7 @@ class SpacesScreen extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                side: BorderSide(color: AppColors.accent),
+                                side: const BorderSide(color: AppColors.accent),
                               ),
                             ),
                           ],
@@ -343,8 +334,7 @@ class SpacesScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    SpaceDetailsScreen(space: space),
+                                builder: (context) => SpaceDetailsScreen(space: space),
                               ),
                             );
                           },
@@ -359,14 +349,11 @@ class SpacesScreen extends StatelessWidget {
                                     Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color:
-                                            AppColors.accent.withOpacity(0.1),
+                                        color: AppColors.accent.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Icon(
-                                        space.isPublic
-                                            ? Icons.public
-                                            : Icons.lock_outline,
+                                        space.isPublic ? Icons.public : Icons.lock_outline,
                                         color: AppColors.accent,
                                         size: 20,
                                       ),
@@ -374,27 +361,20 @@ class SpacesScreen extends StatelessWidget {
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             space.name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                                   color: AppColors.navy,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            space.isOwner(spaceProvider.userId)
-                                                ? 'Owner'
-                                                : 'Member',
+                                            space.isOwner(spaceProvider.userId) ? 'Owner' : 'Member',
                                             style: TextStyle(
-                                              color: space.isOwner(
-                                                      spaceProvider.userId)
+                                              color: space.isOwner(spaceProvider.userId)
                                                   ? const Color(0xFF4CAF50)
                                                   : AppColors.darkGrey,
                                               fontSize: 12,
@@ -415,7 +395,7 @@ class SpacesScreen extends StatelessWidget {
                                       ),
                                       child: Text(
                                         '${space.members.length} members',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: AppColors.navy,
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
@@ -434,7 +414,7 @@ class SpacesScreen extends StatelessWidget {
                                     ),
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.info_outline,
                                           size: 16,
                                           color: AppColors.darkGrey,
@@ -443,7 +423,7 @@ class SpacesScreen extends StatelessWidget {
                                         Expanded(
                                           child: Text(
                                             space.description,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: AppColors.darkGrey,
                                               height: 1.4,
                                             ),

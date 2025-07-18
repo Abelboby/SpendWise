@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
 import '../providers/auth_provider.dart';
-import '../providers/finance_provider.dart';
 import '../constants/app_colors.dart';
 import 'settings_screen.dart';
 import 'analytics_screen.dart';
@@ -73,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
                         color: AppColors.accent.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.info_outline,
                         color: AppColors.accent,
                         size: 24,
@@ -99,7 +97,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'Version 1.0.0',
                   style: TextStyle(
                     color: AppColors.darkGrey,
@@ -132,14 +130,14 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  title: Text(
+                  title: const Text(
                     'Abel Boby',
                     style: TextStyle(
                       color: AppColors.navy,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  subtitle: Text(
+                  subtitle: const Text(
                     'Flutter Developer',
                     style: TextStyle(color: AppColors.darkGrey),
                   ),
@@ -157,14 +155,14 @@ class ProfileScreen extends StatelessWidget {
                       color: AppColors.navy.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(
                           Icons.code,
                           color: AppColors.navy,
                           size: 20,
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12),
                         Text(
                           'GitHub',
                           style: TextStyle(
@@ -172,7 +170,7 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const Spacer(),
+                        Spacer(),
                         Text(
                           '@abelboby',
                           style: TextStyle(
@@ -180,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         Icon(
                           Icons.arrow_forward_ios,
                           color: AppColors.darkGrey,
@@ -201,7 +199,7 @@ class ProfileScreen extends StatelessWidget {
                         vertical: 12,
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Close',
                       style: TextStyle(color: AppColors.accent),
                     ),
@@ -264,16 +262,15 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: AppColors.navy,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: AppColors.navy,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.darkGrey,
                           fontSize: 14,
                         ),
@@ -281,7 +278,7 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.chevron_right,
                   color: AppColors.darkGrey,
                 ),
@@ -310,14 +307,14 @@ class ProfileScreen extends StatelessWidget {
                 color: AppColors.lightGrey.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.person_outline,
                 color: AppColors.lightGrey,
                 size: 24,
               ),
             ),
             const SizedBox(width: 12),
-            Text(
+            const Text(
               'Profile',
               style: TextStyle(
                 color: Colors.white,
@@ -364,7 +361,7 @@ class ProfileScreen extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         )
-                      : Icon(
+                      : const Icon(
                           Icons.person,
                           size: 40,
                           color: AppColors.accent,
