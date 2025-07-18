@@ -34,3 +34,10 @@ class AppColors {
   static const realTextColor = navy;
   static const fakeTextColor = darkGrey;
 }
+
+extension ColorWithValues on Color {
+  /// Returns a copy of this color with the given opacity (0.0-1.0) using withAlpha for precision.
+  Color withValues(double opacity) {
+    return withAlpha((opacity * 255).round());
+  }
+}

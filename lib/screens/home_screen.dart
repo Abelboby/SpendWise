@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../providers/auth_provider.dart';
 import '../providers/finance_provider.dart';
 import '../providers/category_provider.dart';
 import '../models/category_model.dart';
@@ -34,18 +33,18 @@ class HomeScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            content: Column(
+            content: const Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Warning: This action cannot be undone!',
                   style: TextStyle(
-                    color: Colors.red[400],
+                    color: Color(0xFFEF5350),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Text(
                   'Are you sure you want to delete this income? All associated expenses will also be permanently deleted.',
                   style: TextStyle(color: AppColors.darkGrey),
@@ -89,7 +88,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.lightGrey.withOpacity(0.15),
+                color: AppColors.lightGrey.withAlpha(38),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: SvgPicture.asset(
@@ -124,7 +123,7 @@ class HomeScreen extends StatelessWidget {
               color: AppColors.navy,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.navy.withOpacity(0.1),
+                  color: AppColors.navy.withAlpha(15),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -149,8 +148,7 @@ class HomeScreen extends StatelessWidget {
                   context,
                   'Remaining',
                   financeProvider.totalIncome - financeProvider.totalExpenses,
-                  financeProvider.totalIncome - financeProvider.totalExpenses >=
-                          0
+                  financeProvider.totalIncome - financeProvider.totalExpenses >= 0
                       ? const Color(0xFF4CAF50)
                       : const Color(0xFFE57373),
                 ),
@@ -166,16 +164,15 @@ class HomeScreen extends StatelessWidget {
                         Icon(
                           Icons.account_balance_wallet_outlined,
                           size: 64,
-                          color: AppColors.darkGrey.withOpacity(0.5),
+                          color: AppColors.darkGrey.withAlpha(128),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'No Incomes Yet',
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    color: AppColors.navy,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: AppColors.navy,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -190,17 +187,14 @@ class HomeScreen extends StatelessWidget {
                     itemCount: incomes.length,
                     itemBuilder: (context, index) {
                       final income = incomes[index];
-                      final expenses =
-                          financeProvider.getExpensesForIncome(income.id);
-                      final remainingAmount = financeProvider
-                          .getRemainingAmountForIncome(income.id);
+                      final expenses = financeProvider.getExpensesForIncome(income.id);
+                      final remainingAmount = financeProvider.getRemainingAmountForIncome(income.id);
 
                       return Dismissible(
                         key: Key(income.id),
                         direction: DismissDirection.endToStart,
                         confirmDismiss: (_) => _confirmDelete(context),
-                        onDismissed: (_) =>
-                            financeProvider.deleteIncome(income.id),
+                        onDismissed: (_) => financeProvider.deleteIncome(income.id),
                         background: Container(
                           margin: const EdgeInsets.only(bottom: 16),
                           decoration: BoxDecoration(
@@ -222,7 +216,7 @@ class HomeScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.navy.withOpacity(0.1),
+                                color: AppColors.navy.withAlpha(25),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -235,8 +229,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        IncomeDetailsScreen(income: income),
+                                    builder: (context) => IncomeDetailsScreen(income: income),
                                   ),
                                 );
                               },
@@ -247,18 +240,13 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Expanded(
                                           child: Text(
                                             income.description,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                                   fontWeight: FontWeight.bold,
                                                   color: AppColors.navy,
                                                 ),
@@ -270,17 +258,12 @@ class HomeScreen extends StatelessWidget {
                                             vertical: 6,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: AppColors.accent
-                                                .withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(20),
+                                            color: AppColors.accent.withAlpha(25),
+                                            borderRadius: BorderRadius.circular(20),
                                           ),
                                           child: Text(
                                             'Rs. ${income.amount.toStringAsFixed(2)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                                   color: AppColors.accent,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -298,10 +281,8 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 6),
                                         Text(
-                                          DateFormat('MMM dd, yyyy')
-                                              .format(income.dateTime),
-                                          style: TextStyle(
-                                              color: AppColors.darkGrey),
+                                          DateFormat('MMM dd, yyyy').format(income.dateTime),
+                                          style: const TextStyle(color: AppColors.darkGrey),
                                         ),
                                       ],
                                     ),
@@ -309,30 +290,25 @@ class HomeScreen extends StatelessWidget {
                                     // Show category if available
                                     Builder(
                                       builder: (context) {
-                                        final categoryProvider =
-                                            context.watch<CategoryProvider>();
-                                        if (!categoryProvider.isEnabled ||
-                                            income.category == null) {
+                                        final categoryProvider = context.watch<CategoryProvider>();
+                                        if (!categoryProvider.isEnabled || income.category == null) {
                                           return const SizedBox.shrink();
                                         }
 
-                                        final categoryName =
-                                            categoryProvider.categories
-                                                .firstWhere(
-                                                  (c) =>
-                                                      c.id == income.category,
-                                                  orElse: () => CategoryModel(
-                                                    id: '',
-                                                    name: 'Unknown',
-                                                    isDefault: false,
-                                                    createdAt: DateTime.now(),
-                                                  ),
-                                                )
-                                                .name;
+                                        final categoryName = categoryProvider.categories
+                                            .firstWhere(
+                                              (c) => c.id == income.category,
+                                              orElse: () => CategoryModel(
+                                                id: '',
+                                                name: 'Unknown',
+                                                isDefault: false,
+                                                createdAt: DateTime.now(),
+                                              ),
+                                            )
+                                            .name;
 
                                         return Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8),
+                                          padding: const EdgeInsets.only(top: 8),
                                           child: Row(
                                             children: [
                                               Icon(
@@ -342,20 +318,17 @@ class HomeScreen extends StatelessWidget {
                                               ),
                                               const SizedBox(width: 6),
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
+                                                padding: const EdgeInsets.symmetric(
                                                   horizontal: 8,
                                                   vertical: 2,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color: AppColors.accent
-                                                      .withOpacity(0.1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
+                                                  color: AppColors.accent.withAlpha(25),
+                                                  borderRadius: BorderRadius.circular(12),
                                                 ),
                                                 child: Text(
                                                   categoryName,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: AppColors.darkGrey,
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w500,
@@ -373,10 +346,8 @@ class HomeScreen extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
-                                          color:
-                                              AppColors.navy.withOpacity(0.05),
-                                          borderRadius:
-                                              BorderRadius.circular(8),
+                                          color: AppColors.navy.withAlpha(13),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Row(
                                           children: [
@@ -389,7 +360,7 @@ class HomeScreen extends StatelessWidget {
                                             Expanded(
                                               child: Text(
                                                 income.notes!,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: AppColors.darkGrey,
                                                   height: 1.4,
                                                 ),
@@ -407,21 +378,17 @@ class HomeScreen extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(
                                             children: [
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(8),
                                                 decoration: BoxDecoration(
-                                                  color: AppColors.navy
-                                                      .withOpacity(0.1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
+                                                  color: AppColors.navy.withAlpha(25),
+                                                  borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                child: Icon(
+                                                child: const Icon(
                                                   Icons.receipt_outlined,
                                                   size: 16,
                                                   color: AppColors.navy,
@@ -430,7 +397,7 @@ class HomeScreen extends StatelessWidget {
                                               const SizedBox(width: 8),
                                               Text(
                                                 '${expenses.length} Expenses',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: AppColors.navy,
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -489,7 +456,7 @@ class HomeScreen extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.lightGrey.withOpacity(0.8),
+            color: AppColors.lightGrey.withAlpha(204),
             fontSize: 12,
           ),
         ),
