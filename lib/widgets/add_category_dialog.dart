@@ -80,7 +80,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                  borderSide: BorderSide(color: primaryColor.withAlpha((0.2 * 255).toInt())),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -113,7 +113,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
               height: 200,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: primaryColor.withOpacity(0.2),
+                  color: primaryColor.withAlpha((0.2 * 255).toInt()),
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -136,9 +136,9 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.accent.withOpacity(0.1) : Colors.transparent,
+                        color: isSelected ? AppColors.accent.withAlpha((0.1 * 255).toInt()) : Colors.transparent,
                         border: Border.all(
-                          color: isSelected ? AppColors.accent : primaryColor.withOpacity(0.2),
+                          color: isSelected ? AppColors.accent : primaryColor.withAlpha((0.2 * 255).toInt()),
                         ),
                         borderRadius: BorderRadius.circular(8),
                       ),

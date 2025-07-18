@@ -28,7 +28,7 @@ class SpacesScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.1),
+                      color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -60,7 +60,7 @@ class SpacesScreen extends StatelessWidget {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.darkGrey.withOpacity(0.3)),
+                    borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                   ),
                   prefixIcon: const Icon(Icons.key_outlined, color: AppColors.darkGrey),
                 ),
@@ -134,7 +134,7 @@ class SpacesScreen extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.lightGrey.withOpacity(0.8),
+            color: AppColors.lightGrey.withAlpha((0.8 * 255).toInt()),
             fontSize: 12,
           ),
         ),
@@ -162,7 +162,7 @@ class SpacesScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.lightGrey.withOpacity(0.15),
+                color: AppColors.lightGrey.withAlpha((0.15 * 255).toInt()),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -192,7 +192,7 @@ class SpacesScreen extends StatelessWidget {
               color: AppColors.navy,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.navy.withOpacity(0.1),
+                  color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -245,7 +245,7 @@ class SpacesScreen extends StatelessWidget {
                         Icon(
                           Icons.group_work_outlined,
                           size: 64,
-                          color: AppColors.darkGrey.withOpacity(0.5),
+                          color: AppColors.darkGrey.withAlpha((0.5 * 255).toInt()),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -321,7 +321,7 @@ class SpacesScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.navy.withOpacity(0.1),
+                            color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -349,7 +349,7 @@ class SpacesScreen extends StatelessWidget {
                                     Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: AppColors.accent.withOpacity(0.1),
+                                        color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Icon(
@@ -390,7 +390,7 @@ class SpacesScreen extends StatelessWidget {
                                         vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: AppColors.navy.withOpacity(0.1),
+                                        color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Text(
@@ -409,7 +409,7 @@ class SpacesScreen extends StatelessWidget {
                                   Container(
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: AppColors.navy.withOpacity(0.05),
+                                      color: AppColors.navy.withAlpha((0.05 * 255).toInt()),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(

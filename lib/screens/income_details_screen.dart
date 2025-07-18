@@ -133,7 +133,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                   Text(
                     'Added by ${creator.displayName}',
                     style: TextStyle(
-                      color: AppColors.lightGrey.withOpacity(0.8),
+                      color: AppColors.lightGrey.withAlpha(204),
                       fontSize: 14,
                     ),
                   ),
@@ -143,7 +143,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.2),
+                      color: AppColors.accent.withAlpha(51),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -170,7 +170,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                 ],
                 Text(
                   DateFormat('MMMM dd, yyyy').format(income.dateTime),
-                  style: TextStyle(color: AppColors.lightGrey.withOpacity(0.8)),
+                  style: TextStyle(color: AppColors.lightGrey.withAlpha(204)),
                 ),
                 if (income.notes != null) ...[
                   const SizedBox(height: 12),
@@ -179,14 +179,14 @@ class IncomeDetailsScreen extends StatelessWidget {
                       Icon(
                         Icons.notes_outlined,
                         size: 16,
-                        color: AppColors.lightGrey.withOpacity(0.8),
+                        color: AppColors.lightGrey.withAlpha(204),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           income.notes!,
                           style: TextStyle(
-                            color: AppColors.lightGrey.withOpacity(0.8),
+                            color: AppColors.lightGrey.withAlpha(204),
                             fontSize: 14,
                             height: 1.4,
                           ),
@@ -269,7 +269,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                        color: AppColors.navy.withOpacity(0.1),
+                        color: AppColors.navy.withAlpha(25),
                       ),
                     ),
                     child: Padding(
@@ -310,7 +310,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.accent.withOpacity(0.1),
+                                  color: AppColors.accent.withAlpha(25),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -347,7 +347,7 @@ class IncomeDetailsScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent.withOpacity(0.1),
+                                    color: AppColors.accent.withAlpha(25),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -436,7 +436,7 @@ class IncomeDetailsScreen extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.lightGrey.withOpacity(0.8),
+            color: AppColors.lightGrey.withAlpha(204),
             fontSize: 12,
           ),
         ),

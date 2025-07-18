@@ -149,20 +149,17 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                   labelStyle: TextStyle(color: AppColors.darkGrey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.navy.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.navy.withAlpha((0.1 * 255).toInt())),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.navy.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.navy.withAlpha((0.1 * 255).toInt())),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: AppColors.accent),
                   ),
-                  prefixIcon: Icon(Icons.description_outlined,
-                      color: AppColors.darkGrey),
+                  prefixIcon: Icon(Icons.description_outlined, color: AppColors.darkGrey),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -180,20 +177,17 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                   labelStyle: TextStyle(color: AppColors.darkGrey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.navy.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.navy.withAlpha((0.1 * 255).toInt())),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.navy.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.navy.withAlpha((0.1 * 255).toInt())),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: AppColors.accent),
                   ),
-                  prefixIcon: Icon(Icons.attach_money_outlined,
-                      color: AppColors.darkGrey),
+                  prefixIcon: Icon(Icons.attach_money_outlined, color: AppColors.darkGrey),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -222,11 +216,9 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     ),
-                    prefixIcon: Icon(Icons.category_outlined,
-                        color: AppColors.darkGrey),
+                    prefixIcon: Icon(Icons.category_outlined, color: AppColors.darkGrey),
                   ),
                   items: [
                     const DropdownMenuItem<String>(
@@ -254,8 +246,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: AppColors.darkGrey.withOpacity(0.3)),
+                    border: Border.all(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -274,8 +265,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            DateFormat('MMM dd, yyyy hh:mm a')
-                                .format(_selectedDateTime),
+                            DateFormat('MMM dd, yyyy hh:mm a').format(_selectedDateTime),
                             style: TextStyle(
                               color: AppColors.navy,
                               fontWeight: FontWeight.w500,
@@ -296,20 +286,17 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                   labelStyle: TextStyle(color: AppColors.darkGrey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.navy.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.navy.withAlpha((0.1 * 255).toInt())),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: AppColors.navy.withOpacity(0.1)),
+                    borderSide: BorderSide(color: AppColors.navy.withAlpha((0.1 * 255).toInt())),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: AppColors.accent),
                   ),
-                  prefixIcon:
-                      Icon(Icons.notes_outlined, color: AppColors.darkGrey),
+                  prefixIcon: Icon(Icons.notes_outlined, color: AppColors.darkGrey),
                 ),
               ),
               const SizedBox(height: 24),
@@ -343,8 +330,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Text('Add Expense'),

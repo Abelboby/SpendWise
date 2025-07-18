@@ -123,7 +123,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.1),
+                        color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -155,11 +155,9 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     ),
-                    prefixIcon: Icon(Icons.description_outlined,
-                        color: AppColors.darkGrey),
+                    prefixIcon: Icon(Icons.description_outlined, color: AppColors.darkGrey),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -182,11 +180,9 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     ),
-                    prefixIcon:
-                        Icon(Icons.currency_rupee, color: AppColors.darkGrey),
+                    prefixIcon: Icon(Icons.currency_rupee, color: AppColors.darkGrey),
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -216,11 +212,9 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                            color: AppColors.darkGrey.withOpacity(0.3)),
+                        borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                       ),
-                      prefixIcon: Icon(Icons.category_outlined,
-                          color: AppColors.darkGrey),
+                      prefixIcon: Icon(Icons.category_outlined, color: AppColors.darkGrey),
                     ),
                     items: [
                       const DropdownMenuItem<String>(
@@ -248,8 +242,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      border: Border.all(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -268,8 +261,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              DateFormat('MMM dd, yyyy hh:mm a')
-                                  .format(_selectedDateTime),
+                              DateFormat('MMM dd, yyyy hh:mm a').format(_selectedDateTime),
                               style: TextStyle(
                                 color: AppColors.navy,
                                 fontWeight: FontWeight.w500,
@@ -294,8 +286,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     ),
                     prefixIcon: Icon(Icons.notes, color: AppColors.darkGrey),
                   ),
@@ -309,8 +300,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.darkGrey,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                       child: const Text('Cancel'),
                     ),
@@ -320,8 +310,7 @@ class _AddIncomeDialogState extends State<AddIncomeDialog> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.accent,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

@@ -40,13 +40,13 @@ class ChitList extends StatelessWidget {
                 Icon(
                   Icons.account_balance_wallet_outlined,
                   size: 64,
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  color: Theme.of(context).colorScheme.primary.withAlpha((0.3 * 255).toInt()),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'No chits yet',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        color: Theme.of(context).colorScheme.primary.withAlpha((0.5 * 255).toInt()),
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -54,7 +54,7 @@ class ChitList extends StatelessWidget {
                 Text(
                   'Add your first chit to get started',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        color: Theme.of(context).colorScheme.primary.withAlpha((0.5 * 255).toInt()),
                       ),
                 ),
               ],

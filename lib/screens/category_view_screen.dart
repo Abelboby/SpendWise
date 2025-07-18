@@ -103,7 +103,7 @@ class CategoryViewScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: BorderSide(
-                    color: primaryColor.withOpacity(0.1),
+                    color: primaryColor.withAlpha((0.1 * 255).toInt()),
                   ),
                 ),
                 child: Theme(
@@ -164,7 +164,7 @@ class CategoryViewScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                             side: BorderSide(
-                              color: primaryColor.withOpacity(0.1),
+                              color: primaryColor.withAlpha((0.1 * 255).toInt()),
                             ),
                           ),
                           child: ExpansionTile(
@@ -297,7 +297,7 @@ class CategoryViewScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.1),
+                  color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(

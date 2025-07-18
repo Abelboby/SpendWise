@@ -14,8 +14,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -113,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen>
                       Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withAlpha((0.15 * 255).toInt()),
                           shape: BoxShape.circle,
                         ),
                         child: Container(
@@ -136,10 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 32),
                       Text(
                         'SpendWise',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.5,
@@ -148,11 +144,10 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 12),
                       Text(
                         'Smart financial tracking',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Colors.white.withAlpha((0.8 * 255).toInt()),
+                              fontWeight: FontWeight.w500,
+                            ),
                       ),
                       const SizedBox(height: 48),
                       SizedBox(
@@ -161,7 +156,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white.withOpacity(0.9),
+                            Colors.white.withAlpha((0.9 * 255).toInt()),
                           ),
                         ),
                       ),

@@ -24,8 +24,7 @@ class SpaceDetailsScreen extends StatefulWidget {
   State<SpaceDetailsScreen> createState() => _SpaceDetailsScreenState();
 }
 
-class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
-    with SingleTickerProviderStateMixin {
+class _SpaceDetailsScreenState extends State<SpaceDetailsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -83,7 +82,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                       height: 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.accent.withOpacity(0.1),
+                        color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                       ),
                       child: member.photoUrl != null
                           ? ClipOval(
@@ -104,20 +103,13 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                         children: [
                           Text(
                             member.displayName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                   color: AppColors.navy,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
                           Text(
-                            member.role
-                                .toString()
-                                .split('.')
-                                .last
-                                .toUpperCase(),
+                            member.role.toString().split('.').last.toUpperCase(),
                             style: TextStyle(
                               color: AppColors.darkGrey,
                               fontSize: 12,
@@ -168,8 +160,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                   subtitle: const Text('Remove this member from the space'),
                   onTap: () async {
                     try {
-                      await spaceProvider.removeMember(
-                          widget.space.id, member.userId);
+                      await spaceProvider.removeMember(widget.space.id, member.userId);
                       if (context.mounted) {
                         Navigator.pop(context);
                       }
@@ -228,8 +219,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
             ),
             const SizedBox(height: 16),
             ...SpaceRole.values
-                .where(
-                    (role) => role != SpaceRole.owner) // Cannot change to owner
+                .where((role) => role != SpaceRole.owner) // Cannot change to owner
                 .map(
                   (role) => RadioListTile<SpaceRole>(
                     value: role,
@@ -242,9 +232,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                     },
                     title: Text(role.toString().split('.').last.toUpperCase()),
                     subtitle: Text(
-                      role == SpaceRole.editor
-                          ? 'Can manage members and finances'
-                          : 'Can only view and add expenses',
+                      role == SpaceRole.editor ? 'Can manage members and finances' : 'Can only view and add expenses',
                     ),
                   ),
                 )
@@ -311,7 +299,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.1),
+                      color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -345,7 +333,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                   color: AppColors.lightGrey,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.navy.withOpacity(0.1),
+                    color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                   ),
                 ),
                 child: Row(
@@ -369,8 +357,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content:
-                                  const Text('Invite code copied to clipboard'),
+                              content: const Text('Invite code copied to clipboard'),
                               backgroundColor: AppColors.accent,
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
@@ -433,7 +420,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
             Text(
               widget.space.description,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withAlpha((0.8 * 255).toInt()),
                 fontSize: 14,
               ),
             ),
@@ -476,10 +463,10 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
+                            color: Colors.red.withAlpha((0.1 * 255).toInt()),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Colors.red.withOpacity(0.3),
+                              color: Colors.red.withAlpha((0.3 * 255).toInt()),
                             ),
                           ),
                           child: Row(
@@ -518,8 +505,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                             await spaceProvider.deleteSpace(widget.space.id);
                             if (context.mounted) {
                               Navigator.of(context).pop(); // Close dialog
-                              Navigator.of(context)
-                                  .pop(); // Return to spaces list
+                              Navigator.of(context).pop(); // Return to spaces list
                             }
                           } catch (e) {
                             if (context.mounted) {
@@ -550,7 +536,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,
-          unselectedLabelColor: Colors.white.withOpacity(0.7),
+          unselectedLabelColor: Colors.white.withAlpha((0.7 * 255).toInt()),
           indicatorColor: AppColors.accent,
           indicatorWeight: 3,
           tabs: const [
@@ -575,7 +561,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                       Icon(
                         Icons.account_balance_wallet_outlined,
                         size: 64,
-                        color: AppColors.darkGrey.withOpacity(0.5),
+                        color: AppColors.darkGrey.withAlpha((0.5 * 255).toInt()),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -587,9 +573,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        canManageFinances
-                            ? 'Add an income to get started'
-                            : 'No incomes have been added yet',
+                        canManageFinances ? 'Add an income to get started' : 'No incomes have been added yet',
                         style: TextStyle(color: AppColors.darkGrey),
                       ),
                     ],
@@ -602,12 +586,9 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                 itemCount: incomes.length,
                 itemBuilder: (context, index) {
                   final income = incomes[index];
-                  final expenses =
-                      financeProvider.getExpensesForIncome(income.id);
-                  final remainingAmount =
-                      financeProvider.getRemainingAmountForIncome(income.id);
-                  final creator = widget.space.members
-                      .firstWhere((m) => m.userId == income.createdBy);
+                  final expenses = financeProvider.getExpensesForIncome(income.id);
+                  final remainingAmount = financeProvider.getRemainingAmountForIncome(income.id);
+                  final creator = widget.space.members.firstWhere((m) => m.userId == income.createdBy);
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
@@ -616,7 +597,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.navy.withOpacity(0.1),
+                          color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -642,21 +623,16 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           income.description,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium
-                                              ?.copyWith(
+                                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                                 fontWeight: FontWeight.bold,
                                                 color: AppColors.navy,
                                               ),
@@ -666,11 +642,9 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                                           children: [
                                             CircleAvatar(
                                               radius: 10,
-                                              backgroundColor: AppColors.accent
-                                                  .withOpacity(0.2),
+                                              backgroundColor: AppColors.accent.withAlpha((0.2 * 255).toInt()),
                                               child: Text(
-                                                creator.displayName[0]
-                                                    .toUpperCase(),
+                                                creator.displayName[0].toUpperCase(),
                                                 style: TextStyle(
                                                   color: AppColors.accent,
                                                   fontSize: 12,
@@ -697,15 +671,12 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.accent.withOpacity(0.1),
+                                      color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
                                       'Rs. ${income.amount.toStringAsFixed(2)}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                             color: AppColors.accent,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -723,8 +694,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    DateFormat('MMM dd, yyyy')
-                                        .format(income.dateTime),
+                                    DateFormat('MMM dd, yyyy').format(income.dateTime),
                                     style: TextStyle(color: AppColors.darkGrey),
                                   ),
                                 ],
@@ -734,7 +704,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: AppColors.navy.withOpacity(0.05),
+                                    color: AppColors.navy.withAlpha((0.05 * 255).toInt()),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Row(
@@ -766,18 +736,15 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
-                                            color:
-                                                AppColors.navy.withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
+                                            borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: Icon(
                                             Icons.receipt_outlined,
@@ -798,9 +765,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                                     Text(
                                       'Remaining: Rs. ${remainingAmount.toStringAsFixed(2)}',
                                       style: TextStyle(
-                                        color: remainingAmount >= 0
-                                            ? const Color(0xFF4CAF50)
-                                            : const Color(0xFFE57373),
+                                        color: remainingAmount >= 0 ? const Color(0xFF4CAF50) : const Color(0xFFE57373),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -848,8 +813,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
           // Members Tab
           ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: widget.space.members.length +
-                1, // +1 for the Leave Space button
+            itemCount: widget.space.members.length + 1, // +1 for the Leave Space button
             itemBuilder: (context, index) {
               if (index == widget.space.members.length) {
                 // Leave Space button at the bottom
@@ -857,9 +821,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                 final spaceProvider = Provider.of<SpaceProvider>(context);
                 final isOwner = widget.space.isOwner(authProvider.uid);
 
-                if (isOwner)
-                  return const SizedBox
-                      .shrink(); // Don't show leave button for owner
+                if (isOwner) return const SizedBox.shrink(); // Don't show leave button for owner
 
                 return Padding(
                   padding: const EdgeInsets.only(top: 16),
@@ -869,7 +831,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.navy.withOpacity(0.1),
+                          color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -880,7 +842,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                       leading: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.red.withAlpha((0.1 * 255).toInt()),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(
@@ -930,8 +892,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                           try {
                             await spaceProvider.leaveSpace(widget.space.id);
                             if (context.mounted) {
-                              Navigator.of(context)
-                                  .pop(); // Return to spaces list
+                              Navigator.of(context).pop(); // Return to spaces list
                             }
                           } catch (e) {
                             if (context.mounted) {
@@ -958,7 +919,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.navy.withOpacity(0.1),
+                      color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -974,7 +935,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                     height: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.accent.withOpacity(0.1),
+                      color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                     ),
                     child: member.photoUrl != null
                         ? ClipOval(
@@ -997,9 +958,7 @@ class _SpaceDetailsScreenState extends State<SpaceDetailsScreen>
                   subtitle: Text(
                     member.role.toString().split('.').last.toUpperCase(),
                     style: TextStyle(
-                      color: member.role == SpaceRole.owner
-                          ? const Color(0xFF4CAF50)
-                          : AppColors.darkGrey,
+                      color: member.role == SpaceRole.owner ? const Color(0xFF4CAF50) : AppColors.darkGrey,
                     ),
                   ),
                   onTap: () => _showMemberOptions(context, member),

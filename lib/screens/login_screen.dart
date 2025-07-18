@@ -18,8 +18,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
   late AnimationController _backgroundAnimationController;
   late Animation<Alignment> _topAlignmentAnimation;
   late Animation<Alignment> _bottomAlignmentAnimation;
@@ -141,11 +140,9 @@ class _LoginScreenState extends State<LoginScreen>
 
     // Get providers ready before animation
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final financeProvider =
-        Provider.of<FinanceProvider>(context, listen: false);
+    final financeProvider = Provider.of<FinanceProvider>(context, listen: false);
     final spaceProvider = Provider.of<SpaceProvider>(context, listen: false);
-    final categoryProvider =
-        Provider.of<CategoryProvider>(context, listen: false);
+    final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
 
     // Start both animation and data loading concurrently
     await Future.wait<void>([
@@ -165,8 +162,7 @@ class _LoginScreenState extends State<LoginScreen>
     // Navigate to home screen with fade transition
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const HomeScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,
@@ -193,8 +189,8 @@ class _LoginScreenState extends State<LoginScreen>
                     end: _bottomAlignmentAnimation.value,
                     colors: [
                       AppColors.navy,
-                      AppColors.accent.withOpacity(0.8),
-                      AppColors.navy.withOpacity(0.9),
+                      AppColors.accent.withAlpha((0.8 * 255).toInt()),
+                      AppColors.navy.withAlpha((0.9 * 255).toInt()),
                     ],
                   ),
                 ),
@@ -210,8 +206,7 @@ class _LoginScreenState extends State<LoginScreen>
                       duration: const Duration(milliseconds: 500),
                       opacity: _isZooming ? 0 : 0.05,
                       child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 8,
                           mainAxisSpacing: 4,
                           crossAxisSpacing: 4,
@@ -219,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen>
                         itemBuilder: (context, index) => Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withAlpha((0.2 * 255).toInt()),
                           ),
                         ),
                       ),
@@ -236,8 +231,7 @@ class _LoginScreenState extends State<LoginScreen>
                             opacity: _fadeAnimation.value,
                             child: SingleChildScrollView(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 32),
+                                padding: const EdgeInsets.symmetric(horizontal: 32),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -248,15 +242,13 @@ class _LoginScreenState extends State<LoginScreen>
                                         Container(
                                           padding: const EdgeInsets.all(80),
                                           decoration: BoxDecoration(
-                                            color:
-                                                Colors.white.withOpacity(0.05),
+                                            color: Colors.white.withAlpha((0.05 * 255).toInt()),
                                             shape: BoxShape.circle,
                                           ),
                                         ),
                                         Positioned.fill(
                                           child: BackdropFilter(
-                                            filter: ImageFilter.blur(
-                                                sigmaX: 10, sigmaY: 10),
+                                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 color: Colors.transparent,
@@ -271,8 +263,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               AppIcons.wallet,
                                               width: 100,
                                               height: 100,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
+                                              colorFilter: const ColorFilter.mode(
                                                 Colors.white,
                                                 BlendMode.srcIn,
                                               ),
@@ -283,21 +274,17 @@ class _LoginScreenState extends State<LoginScreen>
                                     ),
                                     const SizedBox(height: 40),
                                     ShaderMask(
-                                      shaderCallback: (bounds) =>
-                                          LinearGradient(
+                                      shaderCallback: (bounds) => LinearGradient(
                                         colors: [
                                           Colors.white,
-                                          Colors.white.withOpacity(0.9),
+                                          Colors.white.withAlpha((0.9 * 255).toInt()),
                                         ],
                                         begin: Alignment.topCenter,
                                         end: Alignment.bottomCenter,
                                       ).createShader(bounds),
                                       child: Text(
                                         'SpendWise',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displaySmall
-                                            ?.copyWith(
+                                        style: Theme.of(context).textTheme.displaySmall?.copyWith(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w800,
                                               letterSpacing: 1,
@@ -313,24 +300,21 @@ class _LoginScreenState extends State<LoginScreen>
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           colors: [
-                                            Colors.white.withOpacity(0.2),
-                                            Colors.white.withOpacity(0.1),
+                                            Colors.white.withAlpha((0.2 * 255).toInt()),
+                                            Colors.white.withAlpha((0.1 * 255).toInt()),
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                         ),
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
-                                          color: Colors.white.withOpacity(0.2),
+                                          color: Colors.white.withAlpha((0.2 * 255).toInt()),
                                           width: 1,
                                         ),
                                       ),
                                       child: Text(
                                         'Smart financial tracking',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
+                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w500,
                                               letterSpacing: 0.5,
@@ -342,24 +326,21 @@ class _LoginScreenState extends State<LoginScreen>
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(24),
                                       child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                            sigmaX: 5, sigmaY: 5),
+                                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                                         child: Container(
                                           padding: const EdgeInsets.all(24),
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
                                               colors: [
-                                                Colors.white.withOpacity(0.2),
-                                                Colors.white.withOpacity(0.1),
+                                                Colors.white.withAlpha((0.2 * 255).toInt()),
+                                                Colors.white.withAlpha((0.1 * 255).toInt()),
                                               ],
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomRight,
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(24),
+                                            borderRadius: BorderRadius.circular(24),
                                             border: Border.all(
-                                              color:
-                                                  Colors.white.withOpacity(0.2),
+                                              color: Colors.white.withAlpha((0.2 * 255).toInt()),
                                               width: 1,
                                             ),
                                           ),
@@ -371,26 +352,17 @@ class _LoginScreenState extends State<LoginScreen>
                                                 'Track Income & Expenses',
                                               ),
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 16),
+                                                padding: const EdgeInsets.symmetric(vertical: 16),
                                                 child: Container(
                                                   height: 1,
                                                   decoration: BoxDecoration(
                                                     gradient: LinearGradient(
                                                       colors: [
-                                                        Colors.white
-                                                            .withOpacity(0),
-                                                        Colors.white
-                                                            .withOpacity(0.3),
-                                                        Colors.white
-                                                            .withOpacity(0),
+                                                        Colors.white.withAlpha((0 * 255).toInt()),
+                                                        Colors.white.withAlpha((0.3 * 255).toInt()),
+                                                        Colors.white.withAlpha((0 * 255).toInt()),
                                                       ],
-                                                      stops: const [
-                                                        0.0,
-                                                        0.5,
-                                                        1.0
-                                                      ],
+                                                      stops: const [0.0, 0.5, 1.0],
                                                     ),
                                                   ),
                                                 ),
@@ -436,7 +408,7 @@ class _LoginScreenState extends State<LoginScreen>
               duration: const Duration(milliseconds: 300),
               builder: (context, value, child) {
                 return Container(
-                  color: AppColors.navy.withOpacity(0.3 * value),
+                  color: AppColors.navy.withAlpha(((0.3 * value) * 255).toInt()),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(
                       sigmaX: 5.0 * value,
@@ -445,7 +417,7 @@ class _LoginScreenState extends State<LoginScreen>
                     child: Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.accent.withOpacity(value),
+                          AppColors.accent.withAlpha((value * 255).toInt()),
                         ),
                       ),
                     ),
@@ -466,20 +438,20 @@ class _LoginScreenState extends State<LoginScreen>
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.white.withOpacity(0.2),
-                Colors.white.withOpacity(0.1),
+                Colors.white.withAlpha((0.2 * 255).toInt()),
+                Colors.white.withAlpha((0.1 * 255).toInt()),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withAlpha((0.2 * 255).toInt()),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withAlpha((0.1 * 255).toInt()),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),

@@ -68,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.1),
+                        color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
@@ -152,7 +152,7 @@ class ProfileScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.navy.withOpacity(0.05),
+                      color: AppColors.navy.withAlpha((0.05 * 255).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Row(
@@ -228,7 +228,7 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.navy.withOpacity(0.1),
+            color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -246,7 +246,7 @@ class ProfileScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: (iconColor ?? AppColors.accent).withOpacity(0.1),
+                    color: (iconColor ?? AppColors.accent).withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -304,7 +304,7 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.lightGrey.withOpacity(0.15),
+                color: AppColors.lightGrey.withAlpha((0.15 * 255).toInt()),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -335,7 +335,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.navy,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.navy.withOpacity(0.1),
+                  color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -348,9 +348,9 @@ class ProfileScreen extends StatelessWidget {
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.accent.withOpacity(0.1),
+                    color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                     border: Border.all(
-                      color: AppColors.accent.withOpacity(0.2),
+                      color: AppColors.accent.withAlpha((0.2 * 255).toInt()),
                       width: 2,
                     ),
                   ),
@@ -383,7 +383,7 @@ class ProfileScreen extends StatelessWidget {
                       Text(
                         authProvider.email ?? '',
                         style: TextStyle(
-                          color: AppColors.lightGrey.withOpacity(0.8),
+                          color: AppColors.lightGrey.withAlpha((0.8 * 255).toInt()),
                           fontSize: 14,
                         ),
                       ),

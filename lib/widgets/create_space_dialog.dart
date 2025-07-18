@@ -80,7 +80,7 @@ class _CreateSpaceDialogState extends State<CreateSpaceDialog> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.1),
+                        color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -112,11 +112,9 @@ class _CreateSpaceDialogState extends State<CreateSpaceDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     ),
-                    prefixIcon: Icon(Icons.group_work_outlined,
-                        color: AppColors.darkGrey),
+                    prefixIcon: Icon(Icons.group_work_outlined, color: AppColors.darkGrey),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -138,11 +136,9 @@ class _CreateSpaceDialogState extends State<CreateSpaceDialog> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                          color: AppColors.darkGrey.withOpacity(0.3)),
+                      borderSide: BorderSide(color: AppColors.darkGrey.withAlpha((0.3 * 255).toInt())),
                     ),
-                    prefixIcon: Icon(Icons.description_outlined,
-                        color: AppColors.darkGrey),
+                    prefixIcon: Icon(Icons.description_outlined, color: AppColors.darkGrey),
                   ),
                   maxLines: 3,
                   validator: (value) {
@@ -178,8 +174,7 @@ class _CreateSpaceDialogState extends State<CreateSpaceDialog> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed:
-                          _isLoading ? null : () => Navigator.of(context).pop(),
+                      onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.darkGrey,
                         padding: const EdgeInsets.symmetric(
@@ -209,8 +204,7 @@ class _CreateSpaceDialogState extends State<CreateSpaceDialog> {
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
                           : const Text('Create Space'),

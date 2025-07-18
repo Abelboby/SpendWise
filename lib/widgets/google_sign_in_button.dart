@@ -85,15 +85,15 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> with SingleTick
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withAlpha((0.1 * 255).toInt()),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withAlpha((0.2 * 255).toInt()),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha((0.1 * 255).toInt()),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -131,10 +131,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> with SingleTick
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withAlpha((0.2 * 255).toInt()),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withAlpha((0.3 * 255).toInt()),
                           width: 1,
                         ),
                       ),

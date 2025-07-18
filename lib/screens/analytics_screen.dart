@@ -21,7 +21,7 @@ class AnalyticsScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.navy.withOpacity(0.1),
+            color: AppColors.navy.withAlpha((0.1 * 255).toInt()),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -37,7 +37,7 @@ class AnalyticsScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.1),
+                    color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: AppColors.accent),
@@ -188,7 +188,7 @@ class AnalyticsScreen extends StatelessWidget {
                       children: [
                         Text(
                           category.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.navy,
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
@@ -196,7 +196,7 @@ class AnalyticsScreen extends StatelessWidget {
                         ),
                         Text(
                           '${percentage.toStringAsFixed(1)}%',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.accent,
                             fontWeight: FontWeight.bold,
                           ),
@@ -212,7 +212,7 @@ class AnalyticsScreen extends StatelessWidget {
                           children: [
                             Text(
                               'Income: Rs. ${NumberFormat('#,##0.00').format(totalIncome)}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: AppColors.darkGrey,
                                 fontSize: 14,
                               ),
@@ -220,7 +220,7 @@ class AnalyticsScreen extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               'Expenses: Rs. ${NumberFormat('#,##0.00').format(totalExpenses)}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: AppColors.darkGrey,
                                 fontSize: 14,
                               ),
@@ -280,7 +280,7 @@ class AnalyticsScreen extends StatelessWidget {
       width: MediaQuery.of(context).size.width * 0.4,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha((0.1 * 255).toInt()),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -296,7 +296,7 @@ class AnalyticsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.darkGrey,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
@@ -326,7 +326,7 @@ class AnalyticsScreen extends StatelessWidget {
         backgroundColor: AppColors.navy,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
+        title: const Text(
           'Analytics',
           style: TextStyle(color: AppColors.lightGrey),
         ),

@@ -53,7 +53,7 @@ class CategoriesScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(
-                color: primaryColor.withOpacity(0.1),
+                color: primaryColor.withAlpha((0.1 * 255).toInt()),
               ),
             ),
             child: Theme(
@@ -61,7 +61,8 @@ class CategoriesScreen extends StatelessWidget {
                 dividerColor: Colors.transparent,
               ),
               child: ExpansionTile(
-                leading: const Icon(Icons.category,
+                leading: const Icon(
+                  Icons.category,
                   color: AppColors.accent,
                   size: 24,
                 ),
@@ -244,7 +245,7 @@ class CategoriesScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                    borderSide: BorderSide(color: primaryColor.withAlpha((0.2 * 255).toInt())),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -267,7 +268,7 @@ class CategoriesScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: primaryColor.withOpacity(0.2)),
+                      borderSide: BorderSide(color: primaryColor.withAlpha((0.2 * 255).toInt())),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),

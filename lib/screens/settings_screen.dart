@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.1),
+                      color: AppColors.accent.withAlpha((0.1 * 255).toInt()),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -86,13 +86,10 @@ class SettingsScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       if (nameController.text.isNotEmpty) {
-                        final categoryProvider =
-                            context.read<CategoryProvider>();
+                        final categoryProvider = context.read<CategoryProvider>();
                         categoryProvider.addCategory(
                           name: nameController.text,
-                          description: descController.text.isNotEmpty
-                              ? descController.text
-                              : null,
+                          description: descController.text.isNotEmpty ? descController.text : null,
                         );
                         Navigator.pop(context);
                       }
@@ -112,14 +109,12 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDelete(
-      BuildContext context, CategoryModel category) async {
+  Future<void> _confirmDelete(BuildContext context, CategoryModel category) async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Category'),
-        content: Text(
-            'Are you sure you want to delete the category "${category.name}"?'),
+        content: Text('Are you sure you want to delete the category "${category.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -217,23 +212,19 @@ class SettingsScreen extends StatelessWidget {
                               subtitle: category.description != null
                                   ? Text(
                                       category.description!,
-                                      style:
-                                          TextStyle(color: AppColors.darkGrey),
+                                      style: TextStyle(color: AppColors.darkGrey),
                                     )
                                   : null,
                               trailing: category.isDefault
                                   ? Chip(
                                       label: const Text('Default'),
-                                      backgroundColor:
-                                          AppColors.accent.withOpacity(0.1),
-                                      labelStyle:
-                                          TextStyle(color: AppColors.accent),
+                                      backgroundColor: AppColors.accent.withAlpha((0.1 * 255).toInt()),
+                                      labelStyle: TextStyle(color: AppColors.accent),
                                     )
                                   : IconButton(
                                       icon: const Icon(Icons.delete_outline),
                                       color: AppColors.accent,
-                                      onPressed: () =>
-                                          _confirmDelete(context, category),
+                                      onPressed: () => _confirmDelete(context, category),
                                     ),
                             );
                           },
