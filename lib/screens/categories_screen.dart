@@ -61,8 +61,7 @@ class CategoriesScreen extends StatelessWidget {
                 dividerColor: Colors.transparent,
               ),
               child: ExpansionTile(
-                leading: Icon(
-                  category.icon,
+                leading: const Icon(Icons.category,
                   color: AppColors.accent,
                   size: 24,
                 ),
@@ -144,7 +143,7 @@ class CategoriesScreen extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (ctx) => AddIncomeDialog(categoryId: category.id),
+                              builder: (ctx) => const AddIncomeDialog(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -315,7 +314,10 @@ class CategoriesScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                context.read<CategoryProvider>().addCustomCategory(nameController.text, selectedIcon);
+                context.read<CategoryProvider>().addCategory(
+                      name: nameController.text,
+                      icon: selectedIcon,
+                    );
                 Navigator.of(context).pop();
               }
             },

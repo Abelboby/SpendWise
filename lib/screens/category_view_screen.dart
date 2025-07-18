@@ -8,6 +8,7 @@ import '../widgets/add_expense_dialog.dart';
 import '../widgets/add_category_dialog.dart';
 import '../constants/app_colors.dart';
 import 'package:intl/intl.dart';
+import '../models/income_model.dart';
 
 class CategoryViewScreen extends StatelessWidget {
   const CategoryViewScreen({super.key});
@@ -110,8 +111,8 @@ class CategoryViewScreen extends StatelessWidget {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    leading: Icon(
-                      category.icon,
+                    leading: const Icon(
+                      Icons.category,
                       color: AppColors.accent,
                       size: 24,
                     ),
@@ -225,10 +226,16 @@ class CategoryViewScreen extends StatelessWidget {
                                     showDialog(
                                       context: context,
                                       builder: (ctx) => AddExpenseDialog(
-                                        incomeId: income.id,
-                                        remainingAmount: income.remainingAmount,
-                                        isFakeMode: isFakeMode,
-                                        categoryId: category.id,
+                                        income: IncomeModel(
+                                          id: income.id,
+                                          amount: income.amount,
+                                          description: income.description,
+                                          dateTime: income.date,
+                                          notes: null,
+                                          category: income.categoryId,
+                                          spaceId: null,
+                                          createdBy: null,
+                                        ),
                                       ),
                                     );
                                   },
@@ -258,9 +265,7 @@ class CategoryViewScreen extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (ctx) => AddIncomeDialog(
-                                categoryId: category.id,
-                              ),
+                              builder: (ctx) => const AddIncomeDialog(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
